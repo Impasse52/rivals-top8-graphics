@@ -70,3 +70,11 @@ h1 {
     font-size: 42px;
     font-family: Oxygen;
 }
+
+#socials > * {
+    margin-inline: 8px;
+}
+
+#socials > a {
+    text-decoration: none;
+}

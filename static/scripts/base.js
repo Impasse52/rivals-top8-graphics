@@ -7,14 +7,14 @@ window.onload = () => {
     set_top8_from_local_storage();
 
     // settings menu positioning
-    const button_bounds = $("#settings-button")[0].getBoundingClientRect();
-    $("#settings")[0].style.bottom = button_bounds.height + 490 + "px";
-    $("#settings")[0].style.left = button_bounds.x - 0 + "px";
-    $("#settings")[0].style.width = button_bounds.width + "px";
+    const settings_button_bounds = $("#settings-button")[0].getBoundingClientRect();
+    $("#settings")[0].style.bottom = settings_button_bounds.height + 500 + "px";
+    $("#settings")[0].style.left = settings_button_bounds.x - 0 + "px";
+    $("#settings")[0].style.width = settings_button_bounds.width + "px";
 
     // reset positioning
     const reset_button_bounds = $("#reset-button")[0].getBoundingClientRect();
-    $("#confirm-reset")[0].style.bottom = reset_button_bounds.height + 255 + "px";
+    $("#confirm-reset")[0].style.bottom = reset_button_bounds.height + 265 + "px";
     $("#confirm-reset")[0].style.left = reset_button_bounds.x + 12 + "px";
     $("#confirm-reset")[0].style.width = reset_button_bounds.width + "px";
 };
