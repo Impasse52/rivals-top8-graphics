@@ -1,0 +1,372 @@
+<!doctype html>
+
+<html>
+
+<head>
+    <title>RoA Top 8 Graphics Generator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <script src="{{url_for('static', filename='scripts/base.js')}}" type="text/javascript" defer></script>
+    <script src="{{url_for('static', filename='scripts/api.js')}}" type="text/javascript"></script>
+    <script src="{{url_for('static', filename='scripts/forms.js')}}" type="text/javascript"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Oxygen&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body class="bg-dark text-white">
+    <div class="container mt-5">
+        <div class="row">
+            <h1 class="col-md-10">RoA Top 8 Graphics Generator</h1>
+        </div>
+
+        <div class="col col-xs-8 mt-5">
+            <div class="row">
+                <div class="col-md-2 col-xs-8" id="player1">
+                    <div class="col-label">1st place</div>
+                    <form>
+                        <input class="text-center w-100 border rounded-pill m-1" type="text" name="nickname"
+                            id="nickname" placeholder="Nickname">
+                        <select class="text-center w-100 border rounded-pill m-1" name="character" id="p1-character">
+                            <option value="">Character</option>
+
+                        </select class="text-center w-100 border rounded-pill m-1">
+                        <div class="row mx-auto">
+                            <select class="col-md-10 col-xs-2 text-center border rounded-pill m-1" name="skin"
+                                id="skin">
+                                <option value="Default">Default</option>
+                            </select class="text-center w-100 border rounded-pill m-1">
+                            <input id="p1-custom-skin-checkbox" class="col col-xs-1 checkbox" type="checkbox">
+                        </div>
+
+                        <select class="text-center w-100 border rounded-pill m-1" name="secondary" id="p1-secondary">
+                            <option value="">Secondary</option>
+                        </select class="text-center w-100 border rounded-pill m-1">
+                        <select class="text-center w-100 border rounded-pill mb-5 m-1" name="tertiary" id="p1-tertiary">
+                            <option value="">Tertiary</option>
+
+                        </select class="text-center w-100 border rounded-pill m-1">
+                    </form>
+                </div>
+
+                <div class="col-md-2 col-xs-8" id="player2">
+                    <div class="col-label">2nd place</div>
+                    <form>
+                        <input class="text-center w-100 border rounded-pill m-1" type="text" name="nickname"
+                            id="nickname" placeholder="Nickname">
+                        <select class="text-center w-100 border rounded-pill m-1" name="character" id="p2-character">
+                            <option value="">Character</option>
+
+                        </select class="text-center w-100 border rounded-pill m-1">
+                        <div class="row mx-auto">
+                            <select class="col-md-10 col-xs-2 text-center border rounded-pill m-1" name="skin"
+                                id="skin">
+                                <option value="Default">Default</option>
+                            </select class="text-center w-100 border rounded-pill m-1">
+                            <input id="p2-custom-skin-checkbox" class="col col-xs-1 checkbox" type="checkbox">
+                        </div>
+                        <select class="text-center w-100 border rounded-pill m-1" name="secondary" id="p2-secondary">
+                            <option value="">Secondary</option>
+
+                        </select class="text-center w-100 border rounded-pill m-1">
+                        <select class="text-center w-100 border rounded-pill mb-5 m-1" name="tertiary" id="p2-tertiary">
+                            <option value="">Tertiary</option>
+
+                        </select class="text-center w-100 border rounded-pill m-1">
+                    </form>
+                </div>
+
+                <div class="col-md-2 col-xs-8" id="player3">
+                    <div class="col-label">3rd place</div>
+                    <form>
+                        <input class="text-center w-100 border rounded-pill m-1" type="text" name="nickname"
+                            id="nickname" placeholder="Nickname">
+                        <select class="text-center w-100 border rounded-pill m-1" name="character" id="p3-character">
+                            <option value="">Character</option>
+
+                        </select class="text-center w-100 border rounded-pill m-1">
+                        <div class="row mx-auto">
+                            <select class="col-md-10 col-xs-2 text-center border rounded-pill m-1" name="skin"
+                                id="skin">
+                                <option value="Default">Default</option>
+                            </select class="text-center w-100 border rounded-pill m-1">
+                            <input id="p3-custom-skin-checkbox" class="col col-xs-1 checkbox" type="checkbox">
+                        </div>
+                        <select class="text-center w-100 border rounded-pill m-1" name="secondary" id="p3-secondary">
+                            <option value="">Secondary</option>
+
+                        </select class="text-center w-100 border rounded-pill m-1">
+                        <select class="text-center w-100 border rounded-pill mb-5 m-1" name="tertiary" id="p3-tertiary">
+                            <option value="">Tertiary</option>
+
+                        </select class="text-center w-100 border rounded-pill m-1">
+                    </form>
+                </div>
+
+                <div class="col-md-2 col-xs-8 me-5" id="player4">
+                    <div class="col-label">4th place</div>
+                    <form>
+                        <input class="text-center w-100 border rounded-pill m-1" type="text" name="nickname"
+                            id="nickname" placeholder="Nickname">
+                        <select class="text-center w-100 border rounded-pill m-1" name="character" id="p4-character">
+                            <option value="">Character</option>
+
+                        </select class="text-center w-100 border rounded-pill m-1">
+                        <div class="row mx-auto">
+                            <select class="col-md-10 col-xs-2 text-center border rounded-pill m-1" name="skin"
+                                id="skin">
+                                <option value="Default">Default</option>
+                            </select class="text-center w-100 border rounded-pill m-1">
+                            <input id="p4-custom-skin-checkbox" class="col col-xs-1 checkbox" type="checkbox">
+                        </div>
+                        <select class="text-center w-100 border rounded-pill m-1" name="secondary" id="p4-secondary">
+                            <option value="">Secondary</option>
+
+                        </select class="text-center w-100 border rounded-pill m-1">
+                        <select class="text-center w-100 border rounded-pill mb-5 m-1" name="tertiary" id="p4-tertiary">
+                            <option value="">Tertiary</option>
+
+                        </select class="text-center w-100 border rounded-pill m-1">
+                    </form>
+                </div>
+                <div class="col-md-2 col-xs-8">
+                    <div class="col-label">Preview</div>
+                    <center><a id="img_link" href=""><img class="col border rounded m-1" id="output_img"
+                                src="{{url_for('static', filename='img/default.png')}}" width="350"></img></a></center>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-2 col-xs-8" id="player5">
+                    <div class="col-label">5th place</div>
+                    <form>
+                        <input class="text-center w-100 border rounded-pill m-1" type="text" name="nickname"
+                            id="nickname" placeholder="Nickname">
+                        <select class="text-center w-100 border rounded-pill m-1" name="character" id="p5-character">
+                            <option value="">Character</option>
+
+                        </select class="text-center w-100 border rounded-pill m-1">
+                        <div class="row mx-auto">
+                            <select class="col-md-10 col-xs-2 text-center border rounded-pill m-1" name="skin"
+                                id="skin">
+                                <option value="Default">Default</option>
+                            </select class="text-center w-100 border rounded-pill m-1">
+                            <input id="p5-custom-skin-checkbox" class="col col-xs-1 checkbox" type="checkbox">
+                        </div>
+                        <select class="text-center w-100 border rounded-pill m-1" name="secondary" id="p5-secondary">
+                            <option value="">Secondary</option>
+
+                        </select class="text-center w-100 border rounded-pill m-1">
+                        <select class="text-center w-100 border rounded-pill mb-5 m-1" name="tertiary" id="p5-tertiary">
+                            <option value="">Tertiary</option>
+
+                        </select class="text-center w-100 border rounded-pill m-1">
+
+                    </form>
+                </div>
+
+                <div class="col-md-2 col-xs-8" id="player6">
+                    <div class="col-label">5th place</div>
+
+                    <form>
+                        <input class="text-center w-100 border rounded-pill m-1" type="text" name="nickname"
+                            id="nickname" placeholder="Nickname">
+                        <select class="text-center w-100 border rounded-pill m-1" name="character" id="p6-character">
+                            <option value="">Character</option>
+
+                        </select class="text-center w-100 border rounded-pill m-1">
+                        <div class="row mx-auto">
+                            <select class="col-md-10 col-xs-2 text-center border rounded-pill m-1" name="skin"
+                                id="skin">
+                                <option value="Default">Default</option>
+                            </select class="text-center w-100 border rounded-pill m-1">
+                            <input id="p6-custom-skin-checkbox" class="col col-xs-1 checkbox" type="checkbox">
+                        </div>
+                        <select class="text-center w-100 border rounded-pill m-1" name="secondary" id="p6-secondary">
+                            <option value="">Secondary</option>
+
+                        </select class="text-center w-100 border rounded-pill m-1">
+                        <select class="text-center w-100 border rounded-pill mb-5 m-1" name="tertiary" id="p6-tertiary">
+                            <option value="">Tertiary</option>
+
+                        </select class="text-center w-100 border rounded-pill m-1">
+
+                    </form>
+                </div>
+
+                <div class="col-md-2 col-xs-8" id="player7">
+                    <div class="col-label">7th place</div>
+                    <form>
+                        <input class="text-center w-100 border rounded-pill m-1" type="text" name="nickname"
+                            id="nickname" placeholder="Nickname">
+                        <select class="text-center w-100 border rounded-pill m-1" name="character" id="p7-character">
+                            <option value="">Character</option>
+
+                        </select class="text-center w-100 border rounded-pill m-1">
+                        <div class="row mx-auto">
+                            <select class="col-md-10 col-xs-2 text-center border rounded-pill m-1" name="skin"
+                                id="skin">
+                                <option value="Default">Default</option>
+                            </select class="text-center w-100 border rounded-pill m-1">
+                            <input id="p7-custom-skin-checkbox" class="col col-xs-1 checkbox" type="checkbox">
+                        </div>
+                        <select class="text-center w-100 border rounded-pill m-1" name="secondary" id="p7-secondary">
+                            <option value="">Secondary</option>
+
+                        </select class="text-center w-100 border rounded-pill m-1">
+                        <select class="text-center w-100 border rounded-pill mb-5 m-1" name="tertiary" id="p7-tertiary">
+                            <option value="">Tertiary</option>
+
+                        </select class="text-center w-100 border rounded-pill m-1">
+
+                    </form>
+                </div>
+
+                <div class="col-md-2 col-xs-8 me-5" id="player8">
+                    <div class="col-label">7th place</div>
+                    <form>
+                        <input class="text-center w-100 border rounded-pill m-1" type="text" name="nickname"
+                            id="nickname" placeholder="Nickname">
+                        <select class="text-center w-100 border rounded-pill m-1" name="character" id="p8-character">
+                            <option value="">Character</option>
+
+                        </select class="text-center w-100 border rounded-pill m-1">
+                        <div class="row mx-auto">
+                            <select class="col-md-10 col-xs-2 text-center border rounded-pill m-1" name="skin"
+                                id="skin">
+                                <option value="Default">Default</option>
+                            </select class="text-center w-100 border rounded-pill m-1">
+                            <input id="p8-custom-skin-checkbox" class="col col-xs-1 checkbox" type="checkbox">
+                        </div>
+                        <select class="text-center w-100 border rounded-pill m-1" name="secondary" id="p8-secondary">
+                            <option value="">Secondary</option>
+
+                        </select class="text-center w-100 border rounded-pill m-1">
+                        <select class="text-center w-100 border rounded-pill mb-5 m-1" name="tertiary" id="p8-tertiary">
+                            <option value="">Tertiary</option>
+
+                        </select class="text-center w-100 border rounded-pill m-1">
+
+                    </form>
+                </div>
+                <div class="col col-xs-8 mt-3">
+                    <div class="row">
+                        <div class="row d-flex justify-content-between">
+                            <div class="col-md-7 col-label">Tournament Name</div>
+                            <div class="col-md-4 col-label">᲼᲼᲼Attendees</div>
+                        </div>
+                        <form id="meta-form" class="col col-xs-8">
+                            <div class="row">
+                                <input class="col-md-8 text-center border rounded-pill m-1" type="text" name="title"
+                                    id="title" placeholder="Title" value="Your Rivals Tournament">
+
+                                <input class="col text-center border rounded-pill m-1" type="number" name="participants"
+                                    id="participants" placeholder="Attendees" min=0 value=0>
+                            </div>
+                            <div class="row">
+                                <div class="col col-label">Date</div>
+                            </div>
+                            <div class="row">
+                                <input class="col text-center border rounded-pill m-1" type="date" name="date" id="date"
+                                    placeholder="Date">
+                            </div>
+                            <div class="row">
+                                <span class="col col-label">Color</span>
+                                <span class="col-md-6 col-label">Background</span>
+                                <span class="col-md-2 col-label" style="margin-right: 29px;">Variant</span>
+                            </div>
+
+                            <div class="row">
+                                <input id="layoutRGB" type="color"
+                                    class="col form-control form-control-color rounded-pill m-1" value="#374880">
+                                <!-- <input class="col-md-3 text-center border rounded-pill m-1" type="number" name="opacity"
+                                id="opacity" placeholder="A" min=0 max=255 value=100> -->
+
+                                <select class="col-md-6 text-center border rounded-pill m-1" id="background"
+                                    style="padding-left: -5px">
+                                    <option value="">Empty</option>
+                                </select>
+
+                                <select class="col text-center border rounded-pill m-1" id="bg_variant">
+                                    <option value="1">1</option>
+                                </select>
+                            </div>
+                            <div class="row">
+                                <!-- <input class="text-center col-md-9 border rounded-pill m-1" type="text"
+                                    name="tournament_url" id="tournament_url" placeholder="Tournament URL"> -->
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="row justify-content-center">
+                    <button id="settings-button" class="btn-dark col-md-3 border rounded-pill m-3" type="button">
+                        <span>Settings</span>
+                    </button>
+                    <button id="reset-button" class="btn-dark col-md-3 border rounded-pill m-3" type="button">
+                        <span>Reset</span>
+                    </button>
+                    <button id="generate-button" class="btn-dark col-md-3 border rounded-pill m-3" type="button">
+                        <span id="generate-button-span">Generate</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="text-center mt-4" style="line-height: 18px;"><sup>Thanks to <a href="https://twitter.com/Readeku/"
+                target="_blank">Readek</a> for
+            allowing me to use
+            their custom skins tool in this project, <br> to <a
+                href="https://twitter.com/Kaiwarete/"">Kai</a> for testing this and to <a href="
+                https://twitter.com/kiirochii">Kii</a> for providing the base graphic!</sup></div>
+
+    <div id="socials" class="text-center mt-3">
+        <a href="https://ko-fi.com/impasse52" target="_blank">
+            <img height=32 src="{{url_for('static', filename='img/ko-fi.png')}}">
+        </a>
+    </div>
+    <div class="settings" id="settings">
+        <div class="settings-entry p-3">
+            <h6 class="col-label">Skins JSON</h6>
+            <input type="file" id="upload_skins" class="form-control" accept=".json" />
+            <label class="border-0 rounded-pill m-2 text-center form-label" id="upload_skins_label" for="upload_skins"
+                title="Upload Skins JSON">
+                Uploaded JSON: none
+            </label>
+        </div>
+        <div class="settings-entry p-3 row">
+            <h6 class="col-label">Layout</h6>
+            <div class="col">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="layout" id="layout1" checked value="option1">
+                    <label class="form-check-label" for="layout1">Layout 1</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="layout" id="layout2" value="option2">
+                    <label class="form-check-label" for="layout2">Layout 2</label>
+                </div>
+            </div>
+        </div>
+        <div class="settings-entry row p-3">
+            <h6 class="col-label">Fetch a tournament</h6>
+            <input class="text-center col border rounded-pill m-1" type="text" name="tournament_url" id="tournament_url"
+                placeholder="Tournament URL">
+            <button id="fetch-button" class="btn-dark col-md-4 border rounded-pill m-1" type="button">
+                <span id="fetch-button-span">Fetch</span>
+            </button>
+        </div>
+    </div>
+    <div class="settings row" id="confirm-reset">
+        <button id="confirm-reset-button" class="col-md btn-dark border rounded-pill m-1" type="button">
+            Confirm
+        </button>
+        <button id="cancel-reset-button" class="col-md btn-dark border rounded-pill m-1" type="button">
+            Cancel
+        </button>
+    </div>
+</body>
+
+</html>
