@@ -517,13 +517,31 @@ def draw_rectangle(image, rgb, top_left, bot_right):
     return image
 
 
-def draw_text(image, text, rgb, font_size, bot_right, center_text=False, anchor="lt"):
+def draw_text(
+    image,
+    text,
+    rgb,
+    font_size,
+    bot_right,
+    center_text=False,
+    anchor="lt",
+    nickname=False,
+):
     font_dir = Path(file_dir / "Resources/Layout/Pixellari.ttf")
-
     draw = ImageDraw.Draw(image, "RGBA")
-    font = ImageFont.truetype(
-        font_dir.as_posix(), font_size
-    )  # TODO: add a font parameter
+    font = ImageFont.truetype(font_dir.as_posix(), font_size)
+
+    # properly handles nickname resizing
+    if nickname:
+        nickname_w = draw.textsize(str(text), font)[0]
+        image_w = image.size[0]
+        margin = 10
+        
+        # if nickname is bigger than its slot, reduce font size until it fits
+        while nickname_w > image_w - margin:
+            font_size -= 1
+            font = ImageFont.truetype(font_dir.as_posix(), font_size)
+            nickname_w = draw.textsize(str(text), font)[0]
 
     if center_text:
         W, H = bot_right
@@ -534,8 +552,6 @@ def draw_text(image, text, rgb, font_size, bot_right, center_text=False, anchor=
         draw.text(
             (bot_right[0], bot_right[1]), str(text), fill=rgb, font=font, anchor=anchor
         )
-
-    return image
 
 
 def open_image(input_file, size=(0, 0)):
@@ -734,12 +750,7 @@ def draw_portrait(
     # draws nickname using its bottom right position
     nick_text_br = (portrait.size[0], portrait.size[1] * nickname_multipliers[size])
     draw_text(
-        portrait,
-        nickname,
-        (0, 0, 0),
-        52 if len(nickname) <= 13 else 40,
-        nick_text_br,
-        center_text=True,
+        portrait, nickname, (0, 0, 0), 52, nick_text_br, center_text=True, nickname=True
     )
 
     # draws secondary
