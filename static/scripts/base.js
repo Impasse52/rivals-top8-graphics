@@ -8,7 +8,7 @@ window.onload = () => {
 
     // settings menu positioning
     const settings_button_bounds = $("#settings-button")[0].getBoundingClientRect();
-    $("#settings")[0].style.bottom = settings_button_bounds.height + 500 + "px";
+    $("#settings")[0].style.bottom = settings_button_bounds.height + 595 + "px";
     $("#settings")[0].style.left = settings_button_bounds.x - 0 + "px";
     $("#settings")[0].style.width = settings_button_bounds.width + "px";
 
@@ -52,3 +52,6 @@ for (let i = 1; i <= 8; i++) {
     custom_skin_checkbox = document.getElementById(`p${i}-custom-skin-checkbox`);
     custom_skin_checkbox.onchange = () => custom_skin_checkbox_handler(i);
 }
+
+// handles doubles support
+document.getElementById('doubles-support-checkbox').onchange = () => handle_doubles_support();

@@ -352,6 +352,11 @@ function fill_players_selects(form_id) {
     }
 }
 
+function handle_doubles_support() {
+    for (let i = 0; i < 8; i++)
+        document.getElementById(`p${i}-character-doubles`).remove();
+}
+
 /* characters list - used to fill selects */
 const characters = [
     "Absa",

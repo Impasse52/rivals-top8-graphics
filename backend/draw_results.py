@@ -4,6 +4,7 @@ import shutil
 import sys
 from datetime import datetime
 from pathlib import Path
+from tokenize import String
 
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
@@ -20,7 +21,11 @@ nickname_multipliers = {"L": 1.88, "M": 1.85, "S": 1.83}
 portrait_multipliers = {"L": 1, "M": 0.8, "S": 0.75}
 
 # different box sizes have different zoom-ins
-zoom_multipliers = {"L": 1.65, "M": 1.75, "S": 1.9}
+# True = Singles multipliers, False = Doubles multipliers
+zoom_multipliers = {
+    True: {"L": 1.65, "M": 1.75, "S": 1.90},
+    False: {"L": 1.30, "M": 1.35, "S": 1.70},
+}
 
 # xy offsets
 char_offsets = {
@@ -347,6 +352,7 @@ def draw_top8(
             tertiaries[i],
             bg_opacity=bg_opacity,
             save=False,
+            is_singles=True if isinstance(skins[0], str) else False
         )
         for i in range(8)
     ]
@@ -499,7 +505,6 @@ def pasteImage(img, posn, dst):
                 try:
                     dst_img[x + posn[0], y + posn[1]] = image[x, y]
                 except IndexError:
-                    # print("the thing is acting dumb again")
                     pass
 
 
@@ -536,7 +541,7 @@ def draw_text(
         nickname_w = draw.textsize(str(text), font)[0]
         image_w = image.size[0]
         margin = 10
-        
+
         # if nickname is bigger than its slot, reduce font size until it fits
         while nickname_w > image_w - margin:
             font_size -= 1
@@ -591,8 +596,8 @@ def draw_additional_char(character, portrait, position):
 
 def draw_portrait(
     nickname,
-    character,
-    skin,
+    characters,
+    skins,
     placement,
     resizing,
     rgb,
@@ -601,6 +606,7 @@ def draw_portrait(
     tertiary=None,
     bg_opacity=100,
     save=False,
+    is_singles=True,
 ):
     # loads images
     layout = open_image(Path(file_dir / "Resources/Layout/char_portrait.png"))
@@ -622,125 +628,180 @@ def draw_portrait(
         resample=Image.BOX,
     )
 
-    # checks for custom skin
-    custom_skin = False
+    # wraps parameters in list to handle singles tournaments
+    if isinstance(skins[0], str):
+        skins = [skins]
+        characters = [characters]
 
-    try:
-        matched_pattern = ""
-        matched_pattern = re.search("(.{4}-){1}(.{4}-)*(.{4})", skin).group(0)
-    except AttributeError:
-        pass
+    # flattens lists to handle doubles tournaments
+    if isinstance(skins[0], list):
+        skins = [item for sublist in skins for item in sublist]
+        characters = [item for sublist in characters for item in sublist]
 
-    if skin == matched_pattern:
-        custom_skin = True
+    for i, (character, skin) in enumerate(zip(characters, skins)):
+        # checks for custom skin
+        custom_skin = False
 
-    # returns character image file unless no character is requested
-    if character:
-        if not custom_skin:
-            char_dir = Path(
-                file_dir / f"Resources/Characters/Main/{character}/{skin}.png"
-            )
-            char = open_image(char_dir)
-        else:
-            # TODO: decouple, create a function that creates every custom skin BEFORE creating the portraits
-            # sets some useful directory variables
-            custom_skins_dir = Path(os.path.dirname(os.path.realpath(__file__))) / Path(
-                "Resources/Characters/Main/Custom"
-            )
-            custom_char_dir = (
-                Path(custom_skins_dir) / Path(character) / Path(f"{skin}.png")
-            )
+        try:
+            matched_pattern = ""
+            matched_pattern = re.search("(.{4}-){1}(.{4}-)*(.{4})", skin).group(0)
+        except AttributeError:
+            pass
 
-            # checks if custom skin already exists and uses it, acting as a caching mechanism
-            if os.path.exists(custom_char_dir):
-                char = open_image(custom_char_dir)
-            else:
-                # initializes Chrome driver with the desired options
-                driver = start_headless_driver(custom_skins_dir)
+        if skin == matched_pattern:
+            custom_skin = True
 
-                # gets recolorer webpage
-                driver.get("https://readek.github.io/RoA-Skin-Recolorer/")
-
-                # create recolor of the requested character and skin code
-                generate_recolor(driver, character.title(), skin)
-
-                # gets latest created file and renames it
-                filename = get_latest_file(custom_skins_dir)
-
-                # tries to create custom skins folder for the specified character
-                try:
-                    os.mkdir(Path(custom_skins_dir) / Path(character))
-                except FileExistsError:
-                    pass
-
-                shutil.move(
-                    filename,
-                    Path(custom_skins_dir) / Path(character) / Path(f"{skin}.png"),
+        # returns character image file unless no character is requested
+        if character:
+            if not custom_skin:
+                char_dir = Path(
+                    file_dir / f"Resources/Characters/Main/{character}/{skin}.png"
                 )
-
-                char = open_image(
+                char = open_image(char_dir)
+            else:
+                # todo: decouple, create a function that creates every custom skin BEFORE creating the portraits
+                # sets some useful directory variables
+                custom_skins_dir = Path(
+                    os.path.dirname(os.path.realpath(__file__))
+                ) / Path("Resources/Characters/Main/Custom")
+                custom_char_dir = (
                     Path(custom_skins_dir) / Path(character) / Path(f"{skin}.png")
                 )
 
-        char = char.resize(
+                # checks if custom skin already exists and uses it, acting as a caching mechanism
+                if os.path.exists(custom_char_dir):
+                    char = open_image(custom_char_dir)
+                else:
+                    # initializes Chrome driver with the desired options
+                    driver = start_headless_driver(custom_skins_dir)
+
+                    # gets recolorer webpage
+                    driver.get("https://readek.github.io/RoA-Skin-Recolorer/")
+
+                    # create recolor of the requested character and skin code
+                    generate_recolor(driver, character.title(), skin)
+
+                    # gets latest created file and renames it
+                    filename = get_latest_file(custom_skins_dir)
+
+                    # tries to create custom skins folder for the specified character
+                    try:
+                        os.mkdir(Path(custom_skins_dir) / Path(character))
+                    except FileExistsError:
+                        pass
+
+                    shutil.move(
+                        filename,
+                        Path(custom_skins_dir) / Path(character) / Path(f"{skin}.png"),
+                    )
+
+                    char = open_image(
+                        Path(custom_skins_dir) / Path(character) / Path(f"{skin}.png")
+                    )
+
+            char = char.resize(
+                (
+                    int(
+                        (char.size[0] * zoom_multipliers[is_singles][size])
+                        * portrait_multipliers[size]
+                    ),
+                    int(
+                        (char.size[1] * zoom_multipliers[is_singles][size])
+                        * portrait_multipliers[size]
+                    ),
+                ),
+                resample=Image.BOX,
+            )
+
+            # TODO: temp
+            if size == "L":
+                char = char.resize(
+                    (
+                        int((char.size[0] * 2.0) * portrait_multipliers[size]),
+                        int((char.size[1] * 2.0) * portrait_multipliers[size]),
+                    ),
+                    resample=Image.BOX,
+                )
+            elif size == "M":
+                char = char.resize(
+                    (
+                        int((char.size[0] * 2.4) * portrait_multipliers[size]),
+                        int((char.size[1] * 2.4) * portrait_multipliers[size]),
+                    ),
+                    resample=Image.BOX,
+                )
+            elif size == "S":
+                char = char.resize(
+                    (
+                        int((char.size[0] * 2.6) * portrait_multipliers[size]),
+                        int((char.size[1] * 2.6) * portrait_multipliers[size]),
+                    ),
+                    resample=Image.BOX,
+                )
+
+        else:
+            char = Image.new("RGBA", (0, 0))
+
+        # prevents bad transparency mask errors
+        char = char.convert("RGBA")
+
+        # loads layout and replaces default rgb with the chosen new rgb
+        layout = replace_rgb(layout, (76, 255, 0), rgb)
+
+        doubles_multipliers = {
+            "L": {
+                "x": 0.1,
+                "y": 0,
+            },
+            "M": {
+                "x": 0.11,
+                "y": 0,
+            },
+            "S": {
+                "x": 0.12,
+                "y": 0,
+            },
+        }
+
+        doubles_offsets = {
+            "L": {
+                "x": 150,
+                "y": 0,
+            },
+            "M": {
+                "x": 100,
+                "y": 0,
+            },
+            "S": {
+                "x": 30,
+                "y": 0,
+            },
+        }
+
+        doubles_offset_x = 0
+        doubles_offset_y = 0
+
+        # handles offsets for the first player in a doubles team
+        if is_singles == False and i % 2 == 0:
+            doubles_offset_x = char.size[0] * doubles_multipliers[size]['x']
+            doubles_offset_y = 0
+        # handles offsets for the second player in a doubles team
+        elif is_singles == False and i % 2 == 1:
+            doubles_offset_x = - char.size[0] * doubles_multipliers[size]['x']
+            doubles_offset_y = 0
+
+        # pastes character and layout onto the empty portrait
+        portrait.paste(
+            char,
             (
-                int(
-                    (char.size[0] * zoom_multipliers[size]) * portrait_multipliers[size]
-                ),
-                int(
-                    (char.size[1] * zoom_multipliers[size]) * portrait_multipliers[size]
-                ),
+                int((doubles_offset_x + char_offsets[character][size][0])),
+                int((doubles_offset_y + char_offsets[character][size][1])),
             ),
-            resample=Image.BOX,
+            char,
         )
 
-        # TODO: temp
-        if size == "L":
-            char = char.resize(
-                (
-                    int((char.size[0] * 2.0) * portrait_multipliers[size]),
-                    int((char.size[1] * 2.0) * portrait_multipliers[size]),
-                ),
-                resample=Image.BOX,
-            )
-        elif size == "M":
-            char = char.resize(
-                (
-                    int((char.size[0] * 2.4) * portrait_multipliers[size]),
-                    int((char.size[1] * 2.4) * portrait_multipliers[size]),
-                ),
-                resample=Image.BOX,
-            )
-        elif size == "S":
-            char = char.resize(
-                (
-                    int((char.size[0] * 2.6) * portrait_multipliers[size]),
-                    int((char.size[1] * 2.6) * portrait_multipliers[size]),
-                ),
-                resample=Image.BOX,
-            )
-
-    else:
-        char = Image.new("RGBA", (0, 0))
-
-    # loads layout and replaces default rgb with the chosen new rgb
-    layout = replace_rgb(layout, (76, 255, 0), rgb)
-
-    # prevents bad transparency mask errors
-    char = char.convert("RGBA")
-
-    # pastes character and layout onto the empty portrait
-    portrait.paste(
-        char,
-        (
-            int((char_offsets[character][size][0])),
-            int((char_offsets[character][size][1])),
-        ),
-        char,
-    )
-
-    # pastes layout onto characters again to cover overlaps
-    portrait.paste(layout, (0, 0), layout)
+        # pastes layout onto characters again to cover overlaps
+        portrait.paste(layout, (0, 0), layout)
 
     # draws nickname rectangle using both top left and bottom right position
     nickname_tl = (4, portrait.size[1] - 60)
@@ -847,7 +908,6 @@ def draw_results(
     )
 
     if logo:
-        print(bg.size[0] + logo_offset[0], 0 + logo_offset[1])
         logo_img = Image.open(Path(file_dir) / Path("Resources/Layout/logo.png"))
         logo_img = logo_img.resize(
             (int(logo_img.size[0] * 0.25), int(logo_img.size[1] * 0.25))

@@ -91,7 +91,6 @@ recolors = {
 
 def get_latest_file(dir):
     list_of_files = glob.glob(f"{dir}/*")
-    print(list_of_files)
     latest_file = max(list_of_files, key=os.path.getmtime)
     return latest_file
 
@@ -210,7 +209,12 @@ def generate_top8_recolors(characters, skins):
     # gets recolorer webpage
     driver.get("https://readek.github.io/RoA-Skin-Recolorer/")
 
-    for i in range(0, 8):
+    # flattens lists if generating custom skins for doubles
+    if (isinstance(skins[0], list)):
+        skins = [item for sublist in skins for item in sublist]
+        characters = [item for sublist in characters for item in sublist]
+
+    for i in range(len(skins)):
         character = characters[i]
         skin = skins[i]
 
@@ -245,7 +249,7 @@ def generate_top8_recolors(characters, skins):
 
     driver.close()
 
-
+# a bunch of custom skin codes taken from https://github.com/Readek/RoA-Skin-Recolorer/blob/main/Docs/Game%20Codes.md
 absa = {
     "Default": "7879-A1E7-79B9-82AD-B1BB-9B8F-D6D7-F4EE",
     "Blue": "687F-B269-DEFF-90AB-C0BB-9B8F-C6DD-FF36",
@@ -625,12 +629,12 @@ zetterburn = {
     "Steampunk": "5252-52E4-923F-30D9-A312-9477-0257-552E",
 }
 
-if __name__ == "__main__":
-    # initializes Chrome driver with the desired options
-    driver = start_headless_driver()
+# if __name__ == "__main__":
+#     # initializes Chrome driver with the desired options
+#     driver = start_headless_driver()
 
-    create_named_recolors(driver, "Ori", ori)
-    # generate_recolors_sequence(driver, recolors, custom_skins_dir)
+#     create_named_recolors(driver, "Ori", ori)
+#     # generate_recolors_sequence(driver, recolors, custom_skins_dir)
 
-    # closing browser
-    driver.close()
+#     # closing browser
+#     driver.close()

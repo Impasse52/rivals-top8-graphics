@@ -49,16 +49,12 @@ def get_top8():
         parsed_date = datetime.now().strftime("%d-%m-%Y")
 
     skin_is_custom = [False for _ in range(0, 8)]
-    for i in range(0, 8):
-        if skins[i] != "Grey":
-            try:
-                matched_pattern = ""
-                matched_pattern = re.search("(.{4}-)*(.{4})", skins[i]).group(0)
-            except AttributeError:
-                pass
 
-            if len(skins[i]) > 4 and skins[i] == matched_pattern:
-                skin_is_custom[i] = True
+    for i in range(0, 8):
+        matched_pattern = re.search("(.{4}-)*(.{4})", skins[i]).group(0)
+
+        if skins[i] == matched_pattern:
+            skin_is_custom[i] = True
 
     if any(skin_is_custom):
         generate_top8_recolors(characters, skins)
