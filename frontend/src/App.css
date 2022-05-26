@@ -1,0 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Oxygen&display=swap');
+
+body {
+  font-family: 'Oxygen', sans-serif;
+  background: rgb(56, 113, 130);
+  background: linear-gradient(125deg, rgba(56, 113, 130, 1) 0%, rgba(86, 78, 173, 0.893) 100%);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
