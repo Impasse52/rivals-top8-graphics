@@ -1,5 +1,4 @@
 import { v4 } from "uuid";
-import { CustomSkin } from "../../types";
 import {
   CustomSkinsCheckbox,
   SkinSelectContainer,
@@ -50,6 +49,7 @@ export default function SkinSelect(props: {
       {/* using a hack to render a round "checkbox" with no errors nor warnings */}
       <CustomSkinsCheckbox
         type="radio"
+        style={{height: "34px"}}
         checked={customSkinsEnabled}
         onChange={() => enableCustomSkins(!customSkinsEnabled)}
         onClick={() => enableCustomSkins(!customSkinsEnabled)}

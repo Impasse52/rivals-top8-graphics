@@ -146,7 +146,7 @@ export default function SettingsMenu(props: {
                   target="_blank"
                   rel="noreferrer"
                 >
-                  Kai
+                  Lucy
                 </a>
                 for testing this and to
                 <a

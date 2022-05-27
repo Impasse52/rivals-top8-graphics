@@ -7,6 +7,8 @@ export const SettingsMenuContainer = styled.div`
 export const SettingsButton = styled.input`
   font-family: "Material Icons";
   font-size: 40px;
+  height: 52px;
+  width: 52px;
   color: white;
   border-radius: 35px;
   border: 0;
