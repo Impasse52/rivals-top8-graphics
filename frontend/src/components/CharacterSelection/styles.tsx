@@ -30,7 +30,7 @@ export const CharacterButton = styled.div`
 export const SelectedCharacter = styled.img`
   width: 49px;
   height: 49px;
-  image-rendering: crisp-edges;
+  image-rendering: pixelated;
 `;
 
 export const CharacterPicker = styled.div`
@@ -66,7 +66,7 @@ export const CharacterIcon = styled.img`
   padding: 5px;
   margin: 2px;
   border-radius: 25px;
-  image-rendering: crisp-edges;
+  image-rendering: pixelated;
 
   &:hover {
     background-color: rgb(208, 208, 208);
