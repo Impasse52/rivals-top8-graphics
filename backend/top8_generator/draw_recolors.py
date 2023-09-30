@@ -55,45 +55,62 @@ code_length = {
     "Olympia": 54,
 }
 
+
 # retrieves the latest saved file on the disk
 def get_latest_file(dir):
     list_of_files = glob.glob(f"{dir}/*")
     latest_file = max(list_of_files, key=os.path.getmtime)
     return latest_file
 
-# generates recolor and saves it as a new file on the disk
+
+a = False
+
+
 def generate_recolor(driver, character, skin_code):
+    """Generate recolor and save it as a new file on the driver-chosen
+    downloads directory. Sleep functions are used to ensure that
+    HTML elements are loaded before trying to interact with them."""
+
     char_button = driver.find_element(By.ID, "charSelector")
     char_button.click()
+
+    time.sleep(0.5)
 
     select_char_button = driver.find_element(By.CSS_SELECTOR, characters[character])
     select_char_button.click()
 
-    # waits for portrait to to avoid char length hiccups
     time.sleep(0.5)
 
+    # waits for portrait to to avoid char length hiccups
     code_input = driver.find_element(By.ID, "codeInput")
 
-    if len(skin_code) == code_length[character]:
-        code_input.send_keys(skin_code)
+    # make sure that input field is empty, then send skin code
+    code_input.clear()
+    code_input.send_keys(skin_code)
+
+    time.sleep(1.0)
 
     # clicks on download button
     download_button = driver.find_element(By.ID, "downImgButton")
 
     # might be needed to correctly load the download buttons
-    # time.sleep(0.1)
+    # time.sleep(0.5)
     download_button.click()
+    # time.sleep(30)
 
     # clicks on "download portrait" button
-    download_portrait_button = driver.find_element(By.ID, "Portrait")
+    download_portrait_button = driver.find_element(By.CSS_SELECTOR, "#Portait > button")
     download_portrait_button.click()
+
+    # time.sleep(5)
 
     # useful when creating multiple recolors
     back_button = driver.find_element(By.CSS_SELECTOR, "button.okButton:nth-child(3)")
     back_button.click()
 
     # prevents *.tmp and *.crdownload files from being left around
-    time.sleep(0.5)
+    time.sleep(0.8)
+
 
 def start_headless_driver(download_dir=os.path.dirname(os.path.realpath(__file__))):
     prefs = {"download.default_directory": str(download_dir)}
@@ -101,13 +118,14 @@ def start_headless_driver(download_dir=os.path.dirname(os.path.realpath(__file__
 
     # sets options
     options = Options()
-    options.add_argument("--headless")
+    options.add_argument("--headless=new")
     options.add_experimental_option("prefs", prefs)
 
     return webdriver.Chrome(
-        service=Service(ChromeDriverManager().install()),
+        # service=Service(ChromeDriverManager().install()),
         options=options,
     )
+
 
 # a bunch of custom skin codes taken from https://github.com/Readek/RoA-Skin-Recolorer/blob/main/Docs/Game%20Codes.md
 absa = {
@@ -488,3 +506,13 @@ zetterburn = {
     "Ranked": "FFCC-00F9-E1BE-FFD8-3DE4-E4F0-0000-00B2",
     "Steampunk": "5252-52E4-923F-30D9-A312-9477-0257-552E",
 }
+
+if __name__ == "__main__":
+    driver = start_headless_driver(
+        "/home/impasse/Code/Projects/RoA Top 8 Graphics Generator/test"
+    )
+    driver.get("https://readek.github.io/RoA-Skin-Recolorer/")
+
+    generate_recolor(driver, "Zetterburn", "7E0C-FADC-B97F-FF75-3CF7-0AC4-EB4D-005F")
+    generate_recolor(driver, "Ori", "EDE6-FFFC-FAFF-0000-00C3-BFF3-B199-FF09")
+    generate_recolor(driver, "Ori", "EADA-EE00-0000-0000-0000-0000-F6F6-F684")
