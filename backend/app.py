@@ -10,7 +10,7 @@ from flask_cors import CORS
 from TournamentFetcher import TournamentFetcher
 import yaml
 
-from top8_generator.draw_results import draw_results, draw_top8, draw_top8_columns
+from top8_generator.draw_results import draw_top8_graphic, draw_top8, draw_top8_columns
 
 app = Flask(__name__, static_folder="static/build")
 CORS(app)
@@ -96,7 +96,7 @@ def get_top8() -> Response:
             raise Exception("No valid layout has been specified.")
 
     # draws results graphic and saves it to local disk
-    draw_results(
+    draw_top8_graphic(
         top8_img,
         title=top8["meta"]["title"],
         date=parsed_date,

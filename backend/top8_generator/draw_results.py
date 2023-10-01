@@ -1,9 +1,11 @@
+import logging
 import os
 import re
 import shutil
 import sys
 from datetime import datetime
 from pathlib import Path
+import time
 
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
@@ -557,7 +559,7 @@ def draw_portrait(
     return portrait
 
 
-def draw_results(
+def draw_top8_graphic(
     top8_image=Image.new("RGBA", (0, 0)),
     title="A Rivals of Aether Bracket",
     attendees_num=0,
@@ -569,16 +571,14 @@ def draw_results(
     logo_offset=[-80, 0],
     save=True,
 ):
-    input_file = Path(f"static/Resources/Backgrounds/{stage}/{stage_variant}.png")
+    logging.info("Starting top 8 generation.")
 
-    try:
-        bg = Image.open(input_file)
-    except FileNotFoundError:
-        print(
-            "FileNotFoundError: please check your input file and try again.\n"
-            rf"Current input file: {input_file}"
-        )
-        bg = Image.new("RGBA", (0, 0))
+    bg_dir = Path(f"static/Resources/Backgrounds/{stage}/{stage_variant}.png")
+
+    bg = Image.new("RGBA", (0, 0))
+    if stage != "Background":
+        logging.info(f"Loaded background image from {bg_dir}")
+        bg = Image.open(bg_dir)
 
     bg = bg.resize((1920, 1080), resample=Image.BOX)
 
@@ -631,3 +631,5 @@ def draw_results(
 
     if save:
         bg.save("results.png")
+
+    logging.info(f"Succesfully generated graphic.")

@@ -7,6 +7,8 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 
+import logging
+
 # css path for each character
 characters = {
     "Clairen": "#charRow1 > div:nth-child(1)",
@@ -68,6 +70,11 @@ def generate_recolor(driver, character, skin_code):
     gives extremely similar results, taking ~3.20 seconds to produce
     each custom skin (most of which is spent waiting)."""
 
+    start = time.time()
+    logging.info(
+        f"Generating recolor for character {character} with skin code {skin_code}"
+    )
+
     char_button = driver.find_element(By.ID, "charSelector")
     char_button.click()
 
@@ -91,9 +98,8 @@ def generate_recolor(driver, character, skin_code):
     download_button = driver.find_element(By.ID, "downImgButton")
 
     # might be needed to correctly load the download buttons
-    # time.sleep(0.5)
+    time.sleep(0.5)
     download_button.click()
-    # time.sleep(30)
 
     # clicks on "download portrait" button
     download_portrait_button = driver.find_element(By.CSS_SELECTOR, "#Portait > button")
@@ -108,9 +114,16 @@ def generate_recolor(driver, character, skin_code):
     # prevents *.tmp and *.crdownload files from being left around
     time.sleep(0.8)
 
+    logging.info(f"Custom skin portrait generated in {round(time.time() - start, 2)}s.")
+
 
 def start_headless_driver(download_dir: Path):
-    print("download dir: " + str(download_dir))
+    """Starts headless driver with the selected options. Timing is
+    kept track of because it is suspected that this module is the
+    most time-expensive (parallelization could help)."""
+
+    start = time.time()
+    logging.info("Starting headless driver.")
 
     # set download directory and headless mode
     prefs = {"download.default_directory": str(download_dir)}
@@ -120,6 +133,8 @@ def start_headless_driver(download_dir: Path):
 
     # init and return WebDriver object
     driver = webdriver.Chrome(options=options)
+
+    logging.info(f"Started headless driver in {round(time.time() - start, 2)}s.")
 
     return driver
 
