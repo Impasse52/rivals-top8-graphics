@@ -1,4 +1,6 @@
 import json
+import logging
+import logging.config
 import os
 from datetime import datetime
 from pathlib import Path
@@ -6,11 +8,31 @@ from pathlib import Path
 from flask import Flask, Response, request, send_file, send_from_directory
 from flask_cors import CORS
 from TournamentFetcher import TournamentFetcher
+import yaml
 
 from top8_generator.draw_results import draw_results, draw_top8, draw_top8_columns
 
 app = Flask(__name__, static_folder="static/build")
 CORS(app)
+
+
+def setup_logging(path: str = "logging.yaml", level=logging.INFO) -> None:
+    if os.path.exists(path):
+        with open(path, "rt") as f:
+            config = yaml.safe_load(f.read())
+
+        logging.config.dictConfig(config)
+        logging.info(f"Loaded logging config file from {path}.")
+    else:
+        logging.basicConfig(level=level)
+        logging.warning("logging.yaml not found: using basicConfig for logging.")
+
+
+# setup logging from file
+setup_logging(
+    path="logging.yaml",
+    level=logging.INFO,
+)
 
 
 @app.route("/", defaults={"path": ""})

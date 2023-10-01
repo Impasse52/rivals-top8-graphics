@@ -22,16 +22,16 @@ char_dir = Path("static/Resources/Characters/Secondary")
 
 # draws the standard layout
 def draw_top8(
-    nicknames,
-    characters,
-    skins,
-    secondaries,
-    tertiaries,
-    resize_factor,
-    layout_rgb=(255, 138, 132),
-    bg_opacity=100,
-    save=True,
-):
+    nicknames: list,
+    characters: list,
+    skins: list,
+    secondaries: list,
+    tertiaries: list,
+    resize_factor: float,
+    layout_rgb: tuple = (255, 138, 132),
+    bg_opacity: int = 100,
+    save: bool = True,
+) -> Image.Image:
     # layout settings (from last player to first player)
     placements = [1, 2, 3, 4, 5, 5, 7, 7]
     resizes = [1.223, 0.9, 0.9, 0.9, 0.675, 0.675, 0.675, 0.675]
@@ -82,28 +82,30 @@ def draw_top8(
         "RGBA", (players[0].size[0] + players[1].size[0] * 3 - 4, players[0].size[1])
     )
 
-    pasteImage(players[0], (0, 0), output)
-    pasteImage(players[1], (players[0].size[0] - 4, 0), output)
-    pasteImage(players[2], (players[0].size[0] + players[1].size[0] * 1 - 7, 0), output)
-    pasteImage(
+    paste_image(players[0], (0, 0), output)
+    paste_image(players[1], (players[0].size[0] - 4, 0), output)
+    paste_image(
+        players[2], (players[0].size[0] + players[1].size[0] * 1 - 7, 0), output
+    )
+    paste_image(
         players[3], (players[0].size[0] + players[1].size[0] * 2 - 12, 0), output
     )
-    pasteImage(
+    paste_image(
         players[4],
         (players[0].size[0] + players[4].size[0] * 0 - 4, players[1].size[1]),
         output,
     )
-    pasteImage(
+    paste_image(
         players[5],
         (players[0].size[0] + players[4].size[0] * 1 - 8, players[1].size[1]),
         output,
     )
-    pasteImage(
+    paste_image(
         players[6],
         (players[0].size[0] + players[4].size[0] * 2 - 10, players[1].size[1]),
         output,
     )
-    pasteImage(
+    paste_image(
         players[7],
         (players[0].size[0] + players[4].size[0] * 3 - 12, players[1].size[1]),
         output,
@@ -132,7 +134,7 @@ def draw_top8_columns(
     layout_rgb=(255, 138, 132),
     bg_opacity=100,
     save=True,
-):
+) -> Image.Image:
     # layout settings (from last player to first player)
     placements = [1, 2, 3, 4, 5, 5, 7, 7]
     resizes = [1 for _ in range(0, 8)]
@@ -170,8 +172,8 @@ def draw_top8_columns(
 
     # draws layout
     for i in range(0, 4):
-        pasteImage(players[i], (players[i].size[0] * i + offset_x * i, 0), output)
-        pasteImage(
+        paste_image(players[i], (players[i].size[0] * i + offset_x * i, 0), output)
+        paste_image(
             players[i + 4],
             (players[i].size[0] * i + offset_x * i, players[i].size[1] + offset_y),
             output,
@@ -202,7 +204,7 @@ def replace_rgb(image, old_rgb, new_rgb):
     return Image.fromarray(img_array)
 
 
-def pasteImage(img, posn, dst):
+def paste_image(img, posn, dst):
     # needed to correctly paste images with alpha
     image = img.load()
     width, height = img.size

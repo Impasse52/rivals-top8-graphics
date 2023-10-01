@@ -1,15 +1,11 @@
 import glob
 import os
 from pathlib import Path
-import re
 import time
-import shutil
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
 
 # css path for each character
 characters = {
@@ -60,16 +56,17 @@ code_length = {
 def get_latest_file(dir):
     list_of_files = glob.glob(f"{dir}/*")
     latest_file = max(list_of_files, key=os.path.getmtime)
+
     return latest_file
-
-
-a = False
 
 
 def generate_recolor(driver, character, skin_code):
     """Generate recolor and save it as a new file on the driver-chosen
     downloads directory. Sleep functions are used to ensure that
-    HTML elements are loaded before trying to interact with them."""
+    HTML elements are loaded before trying to interact with them.
+    Using this function in succession and iterating inside this block
+    gives extremely similar results, taking ~3.20 seconds to produce
+    each custom skin (most of which is spent waiting)."""
 
     char_button = driver.find_element(By.ID, "charSelector")
     char_button.click()
@@ -112,21 +109,19 @@ def generate_recolor(driver, character, skin_code):
     time.sleep(0.8)
 
 
-def start_headless_driver(
-    download_dir: Path = Path(os.path.dirname(os.path.realpath(__file__))),
-):
-    prefs = {"download.default_directory": str(download_dir)}
+def start_headless_driver(download_dir: Path):
     print("download dir: " + str(download_dir))
 
-    # sets options
+    # set download directory and headless mode
+    prefs = {"download.default_directory": str(download_dir)}
     options = Options()
     options.add_argument("--headless=new")
     options.add_experimental_option("prefs", prefs)
 
-    return webdriver.Chrome(
-        # service=Service(ChromeDriverManager().install()),
-        options=options,
-    )
+    # init and return WebDriver object
+    driver = webdriver.Chrome(options=options)
+
+    return driver
 
 
 if __name__ == "__main__":
