@@ -1,10 +1,9 @@
 import json
 import os
-import re
 from datetime import datetime
 from pathlib import Path
 
-from flask import Flask, render_template, request, send_file, send_from_directory
+from flask import Flask, Response, request, send_file, send_from_directory
 from flask_cors import CORS
 from TournamentFetcher import TournamentFetcher
 
@@ -13,16 +12,18 @@ from top8_generator.draw_results import draw_results, draw_top8, draw_top8_colum
 app = Flask(__name__, static_folder="static/build")
 CORS(app)
 
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
-def serve(path):
-    if path != "" and os.path.exists(app.static_folder + '/' + path):
-        return send_from_directory(app.static_folder, path)
+
+@app.route("/", defaults={"path": ""})
+@app.route("/<path:path>")
+def serve(path) -> Response:
+    if path != "" and os.path.exists(f"{app.static_folder}/{path}"):
+        return send_from_directory(f"{app.static_folder}", path)
     else:
-        return send_from_directory(app.static_folder, 'index.html')
+        return send_from_directory(f"{app.static_folder}", "index.html")
+
 
 @app.route("/get_top8", methods=["POST"])
-def get_top8():
+def get_top8() -> Response:
     logo = bool(request.args.get("logo"))
 
     # grabs top8 from args and parses it
@@ -106,7 +107,7 @@ def get_all_skins():
 
 
 @app.route("/get_all_backgrounds")
-def get_all_backgrounds():
+def get_all_backgrounds() -> dict:
     resources_path = Path(f"static/Resources/Backgrounds")
 
     backgrounds = {}
@@ -117,14 +118,14 @@ def get_all_backgrounds():
 
 
 @app.route("/get_all_characters")
-def get_all_characters():
+def get_all_characters() -> dict:
     resources_path = Path(f"static/Resources/Characters/Secondary")
 
     return {"characters": [f.replace(".png", "") for f in os.listdir(resources_path)]}
 
 
 @app.route("/fetch_bracket")
-def fetch_bracket():
+def fetch_bracket() -> dict:
     url = request.args.get("url")
 
     t = TournamentFetcher(
@@ -154,7 +155,7 @@ def fetch_bracket():
 
 # deprecated
 @app.route("/get_skins")
-def get_skins():
+def get_skins() -> dict:
     character = request.args.get("character")
 
     if character != "":
@@ -171,7 +172,7 @@ def get_skins():
 
 
 @app.route("/get_backgrounds")
-def get_backgrounds():
+def get_backgrounds() -> dict:
     # module_path = Path(os.path.abspath(rivals_top8_results.__path__[0])
     resources_path = Path(f"static/Resources/Backgrounds")
 
@@ -179,7 +180,7 @@ def get_backgrounds():
 
 
 @app.route("/get_bg_variants")
-def get_bg_variants():
+def get_bg_variants() -> dict:
     background = request.args.get("background")
     # module_path = Path(os.path.abspath(rivals_top8_results.__path__[0])
     resources_path = Path(f"./Resources/Backgrounds/{background}")
