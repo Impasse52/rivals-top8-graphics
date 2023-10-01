@@ -99,7 +99,7 @@ def generate_recolor(driver, character, skin_code):
     download_portrait_button = driver.find_element(By.CSS_SELECTOR, "#Portait > button")
     download_portrait_button.click()
 
-    # time.sleep(5)
+    time.sleep(1)
 
     # useful when creating multiple recolors
     back_button = driver.find_element(By.CSS_SELECTOR, "button.okButton:nth-child(3)")
