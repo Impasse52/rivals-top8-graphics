@@ -128,7 +128,7 @@ def start_headless_driver(download_dir: Path):
     # set download directory and headless mode
     prefs = {"download.default_directory": str(download_dir)}
     options = Options()
-    options.add_argument("--headless=new")
+    options.add_argument("--headless=old")
     options.add_experimental_option("prefs", prefs)
 
     # init and return WebDriver object
