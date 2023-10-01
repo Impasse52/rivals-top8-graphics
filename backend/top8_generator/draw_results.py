@@ -199,7 +199,6 @@ def replace_rgb(image, old_rgb, new_rgb):
     mask = (red == r1) & (green == g1) & (blue == b1)
     img_array[:, :, :3][mask] = [r2, g2, b2]
 
-
     return Image.fromarray(img_array)
 
 
@@ -285,9 +284,8 @@ def open_image(input_file, size=(0, 0)):
 
     if size != (0, 0):
         image.resize(
-            size[0],
-            size[1],
-            # resample=Image.BOX,
+            (size[0], size[1]),
+            resample=Image.BOX,
         )
 
     return image
