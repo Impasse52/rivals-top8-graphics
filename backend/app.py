@@ -18,8 +18,8 @@ CORS(app)
 def serve(path) -> Response:
     if path != "" and os.path.exists(f"{app.static_folder}/{path}"):
         return send_from_directory(f"{app.static_folder}", path)
-    else:
-        return send_from_directory(f"{app.static_folder}", "index.html")
+
+    return send_from_directory(f"{app.static_folder}", "index.html")
 
 
 @app.route("/get_top8", methods=["POST"])
@@ -91,7 +91,7 @@ def get_top8() -> Response:
 
 
 @app.route("/get_all_skins")
-def get_all_skins():
+def get_all_skins() -> dict:
     resources_path = Path(f"static/Resources/Characters/Main")
 
     characters = [f for f in os.listdir(resources_path)]
@@ -128,29 +128,32 @@ def get_all_characters() -> dict:
 def fetch_bracket() -> dict:
     url = request.args.get("url")
 
-    t = TournamentFetcher(
-        challonge_auth={
-            "nickname": os.environ["CHALLONGE_NICKNAME"],
-            "api_key": os.environ["CHALLONGE_API_KEY"],
-        }
-    )
+    challonge_auth = {
+        "nickname": os.environ["CHALLONGE_NICKNAME"],
+        "api_key": os.environ["CHALLONGE_API_KEY"],
+    }
+
+    t = TournamentFetcher(challonge_auth)
 
     # ! subdomain temporarily hardcoded to true
     tournament = t.tournament(url, subdomain=True)
 
-    participants = (
-        tournament.participants[["username", "placement"]]
-        .sort_values(by="placement")
-        .head(8)["username"]
-        .to_list()
-    )
+    if tournament:
+        participants = (
+            tournament.participants[["username", "placement"]]  # type: ignore
+            .sort_values(by="placement")
+            .head(8)["username"]
+            .to_list()
+        )
 
-    return {
-        "top8": participants,
-        "participants_num": tournament.participants_count,
-        "tournament_name": tournament.tournament_name,
-        "tournament_date": tournament.started_at,
-    }
+        return {
+            "top8": participants,
+            "participants_num": tournament.participants_count,
+            "tournament_name": tournament.tournament_name,
+            "tournament_date": tournament.started_at,
+        }
+
+    return {}
 
 
 # deprecated

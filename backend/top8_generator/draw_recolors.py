@@ -112,7 +112,9 @@ def generate_recolor(driver, character, skin_code):
     time.sleep(0.8)
 
 
-def start_headless_driver(download_dir=os.path.dirname(os.path.realpath(__file__))):
+def start_headless_driver(
+    download_dir: Path = Path(os.path.dirname(os.path.realpath(__file__))),
+):
     prefs = {"download.default_directory": str(download_dir)}
     print("download dir: " + str(download_dir))
 
@@ -129,7 +131,7 @@ def start_headless_driver(download_dir=os.path.dirname(os.path.realpath(__file__
 
 if __name__ == "__main__":
     driver = start_headless_driver(
-        "/home/impasse/Code/Projects/RoA Top 8 Graphics Generator/test"
+        Path("/home/impasse/Code/Projects/RoA Top 8 Graphics Generator/test")
     )
     driver.get("https://readek.github.io/RoA-Skin-Recolorer/")
 

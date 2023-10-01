@@ -19,6 +19,7 @@ from .offsets import (
 file_dir = Path(os.path.dirname(os.path.realpath(__file__)))
 char_dir = Path("static/Resources/Characters/Secondary")
 
+
 # draws the standard layout
 def draw_top8(
     nicknames,
@@ -45,12 +46,9 @@ def draw_top8(
     for i in range(len(skins)):
         matched_pattern = re.search("([0-9a-fA-F]{4}-)*([0-9a-fA-F]{4})", skins[i])
 
-        try:
+        if matched_pattern:
             group = matched_pattern.group(0)
             skin_is_custom[i] = True if len(group) > 4 else False
-
-        except AttributeError:
-            pass
 
     # only starts driver if any skin is custom, else sets driver to None
     if any(skin_is_custom):
@@ -122,6 +120,7 @@ def draw_top8(
 
     return output
 
+
 # draws an alternative layout
 def draw_top8_columns(
     nicknames,
@@ -190,7 +189,7 @@ def draw_top8_columns(
     return output
 
 
-def replace_rgb(image, old_rgb, new_rgb, return_image=True):
+def replace_rgb(image, old_rgb, new_rgb):
     img_array = np.array(image)
 
     r1, g1, b1 = old_rgb
@@ -200,10 +199,8 @@ def replace_rgb(image, old_rgb, new_rgb, return_image=True):
     mask = (red == r1) & (green == g1) & (blue == b1)
     img_array[:, :, :3][mask] = [r2, g2, b2]
 
-    if return_image:
-        img_array = Image.fromarray(img_array)
 
-    return img_array
+    return Image.fromarray(img_array)
 
 
 def pasteImage(img, posn, dst):
@@ -230,7 +227,7 @@ def centered_pos(pos1, pos2):
 
 def draw_rectangle(image, rgb, top_left, bot_right):
     draw = ImageDraw.Draw(image, "RGBA")
-    draw.rectangle([top_left, bot_right], fill=(rgb))
+    draw.rectangle((top_left, bot_right), fill=(rgb))
 
     return image
 
@@ -251,7 +248,10 @@ def draw_text(
 
     # properly handles nickname resizing
     if nickname:
-        nickname_w = draw.textsize(str(text), font)[0]
+        # textsize was deprecated
+        # nickname_w = draw.textsize(str(text), font)[0]
+
+        nickname_w = ImageDraw.Draw(image).textbbox((0, 0), str(text), font=font)[2]
         image_w = image.size[0]
         margin = 10
 
@@ -259,11 +259,12 @@ def draw_text(
         while nickname_w > image_w - margin:
             font_size -= 1
             font = ImageFont.truetype(font_dir.as_posix(), font_size)
-            nickname_w = draw.textsize(str(text), font)[0]
+            nickname_w = ImageDraw.Draw(image).textbbox((0, 0), str(text), font=font)[2]
 
     if center_text:
         W, H = bot_right
-        w, h = draw.textsize(str(text), font)
+        # w, h = draw.textsize(str(text), font)
+        _, _, w, h = ImageDraw.Draw(image).textbbox((0, 0), str(text), font=font)
 
         draw.text(((W - w) / 2, (H - h) / 2), str(text), fill=rgb, font=font)
     else:
@@ -286,7 +287,7 @@ def open_image(input_file, size=(0, 0)):
         image.resize(
             size[0],
             size[1],
-            resample=Image.BOX,
+            # resample=Image.BOX,
         )
 
     return image
@@ -298,13 +299,12 @@ def draw_additional_char(character, portrait, position):
     if character != "None":
         try:
             secondary = Image.open(input_file)
+            portrait.paste(secondary, position, secondary)
         except FileNotFoundError:
             print(
                 "FileNotFoundError: please check your input file and try again.\n"
                 rf"Current input file: {input_file}"
             )
-
-        portrait.paste(secondary, position, secondary)
 
 
 def draw_portrait(
@@ -358,15 +358,16 @@ def draw_portrait(
         custom_skin = False
 
         try:
-            matched_pattern = ""
-            matched_pattern = re.search(
-                "([0-9a-fA-F]{4}-)*([0-9a-fA-F]{4})", skin
-            ).group(0)
+            matched_pattern = re.search("([0-9a-fA-F]{4}-)*([0-9a-fA-F]{4})", skin)
+
+            if matched_pattern:
+                matched_pattern = matched_pattern.group(0)
+
+            if skin == matched_pattern:
+                custom_skin = True
+
         except AttributeError:
             pass
-
-        if skin == matched_pattern:
-            custom_skin = True
 
         # returns character image file unless no character is requested
         if character:
@@ -589,7 +590,7 @@ def draw_results(
 
     draw_text(
         bg,
-        "graphics by @Kiirochii",
+        "graphics by @kiirochiicken",
         (255, 255, 255),
         32,
         (10, bg.size[1] - 40),
@@ -630,87 +631,3 @@ def draw_results(
 
     if save:
         bg.save("results.png")
-
-# useful for offset testing purposes
-def draw_all_chars(size):
-    layout_rgb = (0, 230, 200)
-
-    players = [
-        draw_portrait("AAAAAAAA", "Absa", "Default", 1, 2, layout_rgb, size),
-        draw_portrait("AAAAAAAA", "Clairen", "Default", 2, 2, layout_rgb, size),
-        draw_portrait("AAAAAAAA", "Elliana", "Default", 3, 2, layout_rgb, size),
-        draw_portrait("AAAAAAAA", "Etalus", "Default", 4, 2, layout_rgb, size),
-        draw_portrait("AAAAAAAA", "Forsburn", "Default", 5, 2, layout_rgb, size),
-        draw_portrait("AAAAAAAA", "Hodan", "Default", 6, 2, layout_rgb, size),
-        draw_portrait("AAAAAAAA", "Kragg", "Default", 7, 2, layout_rgb, size),
-        draw_portrait("AAAAAAAA", "Maypul", "Default", 8, 2, layout_rgb, size),
-        draw_portrait("AAAAAAAA", "Mollo", "Default", 9, 2, layout_rgb, size),
-        draw_portrait("AAAAAAAA", "Olympia", "Default", 10, 2, layout_rgb, size),
-        draw_portrait("AAAAAAAA", "Orcane", "Default", 11, 2, layout_rgb, size),
-        draw_portrait("AAAAAAAA", "Ori", "Default", 12, 2, layout_rgb, size),
-        draw_portrait("AAAAAAAA", "Pomme", "Default", 13, 2, layout_rgb, size),
-        draw_portrait("AAAAAAAA", "Random", "Default", 14, 2, layout_rgb, size),
-        draw_portrait("AAAAAAAA", "Ranno", "Default", 15, 2, layout_rgb, size),
-        draw_portrait("AAAAAAAA", "Shovel Knight", "Default", 16, 2, layout_rgb, size),
-        draw_portrait("AAAAAAAA", "Sylvanos", "Default", 17, 2, layout_rgb, size),
-        draw_portrait("AAAAAAAA", "Wrastor", "Default", 18, 2, layout_rgb, size),
-        draw_portrait("AAAAAAAA", "Zetterburn", "Default", 19, 2, layout_rgb, size),
-        draw_portrait("AAAAAAAA", "", "Default", 20, 2, layout_rgb, size),
-    ]
-
-    output = Image.new("RGBA", (players[0].size[0] * 4, players[0].size[1] * 5))
-
-    for i, p in enumerate(players):
-        if i == 0:
-            output.paste(p, (0, 0), p)
-        elif i <= 3:
-            output.paste(p, (p.size[0] * i, 0), p)
-        elif i > 3 and i <= 7:
-            output.paste(p, (p.size[0] * i - p.size[0] * 4, p.size[1]), p)
-        elif i > 7 and i <= 11:
-            output.paste(p, (p.size[0] * i - p.size[0] * 4 * 2, p.size[1] * 2), p)
-        elif i > 11 and i <= 15:
-            output.paste(p, (p.size[0] * i - p.size[0] * 4 * 3, p.size[1] * 3), p)
-        elif i > 15 and i <= 19:
-            output.paste(p, (p.size[0] * i - p.size[0] * 4 * 4, p.size[1] * 4), p)
-
-    output.save("output.png")
-
-# deprecated layout
-def draw_top8_popup():
-    layout_rgb = (0, 230, 200)
-
-    players = [
-        draw_portrait("AAAAAAAA", "Zetterburn", "Default", 1, 3, layout_rgb, "L"),
-        draw_portrait("AAAAAAAA", "Wrastor", "Default", 2, 1.6, layout_rgb, "L"),
-        draw_portrait("AAAAAAAA", "Sylvanos", "Default", 3, 1.6, layout_rgb, "L"),
-        draw_portrait("AAAAAAAA", "Shovel Knight", "Default", 4, 1.6, layout_rgb, "L"),
-        draw_portrait("AAAAAAAA", "Ranno", "Default", 5, 1.2, layout_rgb, "L"),
-        draw_portrait("AAAAAAAA", "Ori", "Default", 5, 1.2, layout_rgb, "L"),
-        draw_portrait("AAAAAAAA", "Orcane", "Default", 7, 1.2, layout_rgb, "L"),
-        draw_portrait("AAAAAAAA", "Maypul", "Default", 7, 1.2, layout_rgb, "L"),
-    ]
-
-    output = Image.new(
-        "RGBA", (players[0].size[0] + players[1].size[0] * 3, players[0].size[1])
-    )
-
-    for i, p in enumerate(players):
-        if i == 0:
-            output.paste(p, (0, 0), p)
-        elif i >= 0 and i <= 3:
-            output.paste(
-                p, (players[0].size[0] + players[1].size[0] * (i - 1), 0 + 104), p
-            )
-        elif i > 3:
-            output.paste(
-                p,
-                (
-                    players[0].size[0] + players[4].size[0] * (i - 4),
-                    players[1].size[1] + 104,
-                ),
-                p,
-            )
-
-    output.save("output.png")
-
