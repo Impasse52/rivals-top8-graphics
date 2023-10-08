@@ -1,5 +1,4 @@
-# Rivals Top 8 Graphics Generator
-
+# Rivals Top 8 Graphics
 
 A React-Flask app to easily generate top 8 graphics for your Rivals of Aether tournaments. You can try it out ~~[here](https://roa-top8-graphics-generator.herokuapp.com/)~~ [now on Render](https://rivals-top8-results.onrender.com/)!
 
