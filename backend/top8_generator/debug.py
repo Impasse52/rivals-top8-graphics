@@ -1,4 +1,5 @@
 # useful for offset testing purposes
+from PIL.Image import Image
 from backend.top8_generator.draw_results import draw_portrait
 
 
