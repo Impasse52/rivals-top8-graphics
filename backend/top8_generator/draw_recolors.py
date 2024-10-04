@@ -1,5 +1,3 @@
-import glob
-import os
 from pathlib import Path
 import time
 
@@ -52,14 +50,6 @@ code_length = {
     "Pomme": 49,
     "Olympia": 54,
 }
-
-
-# retrieves the latest saved file on the disk
-def get_latest_file(dir):
-    list_of_files = glob.glob(f"{dir}/*")
-    latest_file = max(list_of_files, key=os.path.getmtime)
-
-    return latest_file
 
 
 def generate_recolor(driver, character, skin_code):

@@ -2,21 +2,28 @@ import logging
 import os
 import re
 import shutil
-import sys
 from datetime import datetime
 from pathlib import Path
-import time
 
-import numpy as np
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image
 
-from .draw_recolors import generate_recolor, get_latest_file, start_headless_driver
+from top8_generator.utils import (
+    centered_pos,
+    draw_rectangle,
+    draw_text,
+    open_image,
+    paste_image,
+    replace_rgb,
+)
+
+from .draw_recolors import generate_recolor, start_headless_driver
 from .offsets import (
     char_offsets,
+    nickname_multipliers,
     portrait_multipliers,
     zoom_multipliers,
-    nickname_multipliers,
 )
+from .utils import get_latest_file
 
 file_dir = Path(os.path.dirname(os.path.realpath(__file__)))
 char_dir = Path("static/Resources/Characters/Secondary")
@@ -191,108 +198,6 @@ def draw_top8_columns(
         output.save("output.png")
 
     return output
-
-
-def replace_rgb(image, old_rgb, new_rgb):
-    img_array = np.array(image)
-
-    r1, g1, b1 = old_rgb
-    r2, g2, b2 = new_rgb
-
-    red, green, blue = img_array[:, :, 0], img_array[:, :, 1], img_array[:, :, 2]
-    mask = (red == r1) & (green == g1) & (blue == b1)
-    img_array[:, :, :3][mask] = [r2, g2, b2]
-
-    return Image.fromarray(img_array)
-
-
-def paste_image(img, posn, dst):
-    # needed to correctly paste images with alpha
-    image = img.load()
-    width, height = img.size
-    dst_img = dst.load()
-
-    for y in range(height):
-        for x in range(width):
-            if image[x, y] != (0, 0, 0, 0):
-                try:
-                    dst_img[x + posn[0], y + posn[1]] = image[x, y]
-                except IndexError:
-                    pass
-
-
-def centered_pos(pos1, pos2):
-    W, H = pos1.size
-    w, h = pos2.size
-
-    return (int((W - w) / 2), int((H - h) / 2))
-
-
-def draw_rectangle(image, rgb, top_left, bot_right):
-    draw = ImageDraw.Draw(image, "RGBA")
-    draw.rectangle((top_left, bot_right), fill=(rgb))
-
-    return image
-
-
-def draw_text(
-    image,
-    text,
-    rgb,
-    font_size,
-    bot_right,
-    center_text=False,
-    anchor="lt",
-    nickname=False,
-):
-    font_dir = Path("static/Resources/Layout/Pixellari.ttf")
-    draw = ImageDraw.Draw(image, "RGBA")
-    font = ImageFont.truetype(font_dir.as_posix(), font_size)
-
-    # properly handles nickname resizing
-    if nickname:
-        # textsize was deprecated
-        # nickname_w = draw.textsize(str(text), font)[0]
-
-        nickname_w = ImageDraw.Draw(image).textbbox((0, 0), str(text), font=font)[2]
-        image_w = image.size[0]
-        margin = 10
-
-        # if nickname is bigger than its slot, reduce font size until it fits
-        while nickname_w > image_w - margin:
-            font_size -= 1
-            font = ImageFont.truetype(font_dir.as_posix(), font_size)
-            nickname_w = ImageDraw.Draw(image).textbbox((0, 0), str(text), font=font)[2]
-
-    if center_text:
-        W, H = bot_right
-        # w, h = draw.textsize(str(text), font)
-        _, _, w, h = ImageDraw.Draw(image).textbbox((0, 0), str(text), font=font)
-
-        draw.text(((W - w) / 2, (H - h) / 2), str(text), fill=rgb, font=font)
-    else:
-        draw.text(
-            (bot_right[0], bot_right[1]), str(text), fill=rgb, font=font, anchor=anchor
-        )
-
-
-def open_image(input_file, size=(0, 0)):
-    try:
-        image = Image.open(input_file)
-    except FileNotFoundError:
-        print(
-            "FileNotFoundError: please check your input file and try again.\n"
-            rf"Current input file: {input_file}"
-        )
-        sys.exit(1)
-
-    if size != (0, 0):
-        image.resize(
-            (size[0], size[1]),
-            resample=Image.BOX,
-        )
-
-    return image
 
 
 def draw_additional_char(character, portrait, position):
@@ -479,30 +384,15 @@ def draw_portrait(
             },
         }
 
-        doubles_offsets = {
-            "L": {
-                "x": 150,
-                "y": 0,
-            },
-            "M": {
-                "x": 100,
-                "y": 0,
-            },
-            "S": {
-                "x": 30,
-                "y": 0,
-            },
-        }
-
         doubles_offset_x = 0
         doubles_offset_y = 0
 
         # handles offsets for the first player in a doubles team
-        if is_singles == False and i % 2 == 0:
+        if not is_singles and i % 2 == 0:
             doubles_offset_x = char.size[0] * doubles_multipliers[size]["x"]
             doubles_offset_y = 0
         # handles offsets for the second player in a doubles team
-        elif is_singles == False and i % 2 == 1:
+        elif not is_singles and i % 2 == 1:
             doubles_offset_x = -char.size[0] * doubles_multipliers[size]["x"]
             doubles_offset_y = 0
 
@@ -632,4 +522,4 @@ def draw_top8_graphic(
     if save:
         bg.save("results.png")
 
-    logging.info(f"Succesfully generated graphic.")
+    logging.info("Succesfully generated graphic.")
