@@ -10,7 +10,8 @@ from flask_cors import CORS
 from TournamentFetcher import TournamentFetcher
 import yaml
 
-from top8_generator.draw_results import draw_top8_graphic, draw_top8, draw_top8_columns
+from top8_generator.graphic import draw_top8_graphic, draw_top8, draw_top8_columns
+
 
 app = Flask(__name__, static_folder="static/build")
 CORS(app)

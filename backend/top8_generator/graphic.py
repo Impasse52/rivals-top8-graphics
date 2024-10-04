@@ -4,9 +4,9 @@ import re
 import shutil
 from datetime import datetime
 from pathlib import Path
+import json
 
 from PIL import Image
-
 from top8_generator.utils import (
     centered_pos,
     draw_rectangle,
@@ -16,17 +16,27 @@ from top8_generator.utils import (
     replace_rgb,
 )
 
-from .draw_recolors import generate_recolor, start_headless_driver
-from .offsets import (
-    char_offsets,
-    nickname_multipliers,
-    portrait_multipliers,
-    zoom_multipliers,
-)
+from .recolor import generate_recolor, start_headless_driver
 from .utils import get_latest_file
+
+with open("top8_generator/config/offsets_de.json") as offsets:
+    char_offsets = json.load(offsets)
 
 file_dir = Path(os.path.dirname(os.path.realpath(__file__)))
 char_dir = Path("static/Resources/Characters/Secondary")
+
+# used to adjust the nicknames' height
+nickname_multipliers = {"L": 1.88, "M": 1.85, "S": 1.83}
+
+# used to pick the right portrait box
+portrait_multipliers = {"L": 1, "M": 0.8, "S": 0.75}
+
+# different box sizes have different zoom-ins
+# True = Singles multipliers, False = Doubles multipliers
+zoom_multipliers = {
+    True: {"L": 1.65, "M": 1.75, "S": 1.90},
+    False: {"L": 1.30, "M": 1.35, "S": 1.70},
+}
 
 
 # draws the standard layout
