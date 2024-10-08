@@ -16,6 +16,11 @@ from top8_generator.graphic import draw_top8_graphic, draw_top8, draw_top8_colum
 app = Flask(__name__, static_folder="static/build")
 CORS(app)
 
+modes = ["roa", "roa2", "melee"]
+
+# TODO: extract from requests
+mode = "roa"
+
 
 def setup_logging(path: str = "logging.yaml", level=logging.INFO) -> None:
     if os.path.exists(path):
@@ -115,7 +120,7 @@ def get_top8() -> Response:
 
 @app.route("/get_all_skins")
 def get_all_skins() -> dict:
-    resources_path = Path("static/Resources/Characters/Main")
+    resources_path = Path(f"static/Resources/{mode}/Characters/Main")
 
     characters = [f for f in os.listdir(resources_path)]
     skins = {}
@@ -131,7 +136,7 @@ def get_all_skins() -> dict:
 
 @app.route("/get_all_backgrounds")
 def get_all_backgrounds() -> dict:
-    resources_path = Path("static/Resources/Backgrounds")
+    resources_path = Path(f"static/Resources/{mode}/Backgrounds")
 
     backgrounds = {}
     for bg in os.listdir(resources_path):
@@ -142,7 +147,7 @@ def get_all_backgrounds() -> dict:
 
 @app.route("/get_all_characters")
 def get_all_characters() -> dict:
-    resources_path = Path("static/Resources/Characters/Secondary")
+    resources_path = Path(f"static/Resources/{mode}/Characters/Secondary")
 
     return {"characters": [f.replace(".png", "") for f in os.listdir(resources_path)]}
 
@@ -186,7 +191,7 @@ def get_skins() -> dict:
 
     if character != "":
         # module_path = Path(os.path.abspath(rivals_top8_results.__path__[0]))
-        resources_path = Path(f"./Resources/Characters/Main/{character}")
+        resources_path = Path(f"./Resources/{mode}/Characters/Main/{character}")
 
         skins = [f.replace(".png", "") for f in os.listdir(resources_path)]
         skins.remove("Default")
@@ -200,7 +205,7 @@ def get_skins() -> dict:
 @app.route("/get_backgrounds")
 def get_backgrounds() -> dict:
     # module_path = Path(os.path.abspath(rivals_top8_results.__path__[0])
-    resources_path = Path("static/Resources/Backgrounds")
+    resources_path = Path(f"static/Resources/{mode}/Backgrounds")
 
     return {"backgrounds": os.listdir(resources_path)}
 
@@ -209,7 +214,7 @@ def get_backgrounds() -> dict:
 def get_bg_variants() -> dict:
     background = request.args.get("background")
     # module_path = Path(os.path.abspath(rivals_top8_results.__path__[0])
-    resources_path = Path(f"./Resources/Backgrounds/{background}")
+    resources_path = Path(f"./Resources/{mode}/Backgrounds/{background}")
 
     variants = [v.replace(".png", "") for v in os.listdir(resources_path)]
 

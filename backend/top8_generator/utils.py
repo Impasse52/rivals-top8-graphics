@@ -114,6 +114,7 @@ def draw_text(
     image,
     text,
     rgb,
+    font_dir,
     font_size,
     bot_right,
     center_text=False,
@@ -136,7 +137,6 @@ def draw_text(
     Returns:
     None
     """
-    font_dir = Path("static/Resources/Layout/Pixellari.ttf")
     draw = ImageDraw.Draw(image, "RGBA")
     font = ImageFont.truetype(font_dir.as_posix(), font_size)
 

@@ -22,8 +22,12 @@ from .utils import get_latest_file
 with open("top8_generator/config/offsets_de.json") as offsets:
     char_offsets = json.load(offsets)
 
+# TODO: properly implement
+mode = "roa"
+
 file_dir = Path(os.path.dirname(os.path.realpath(__file__)))
-char_dir = Path("static/Resources/Characters/Secondary")
+char_dir = Path(f"static/Resources/{mode}/Characters/Secondary")
+font_dir = Path(f"static/Resources/{mode}/Layout/Pixellari.ttf")
 
 # used to adjust the nicknames' height
 nickname_multipliers = {"L": 1.88, "M": 1.85, "S": 1.83}
@@ -57,7 +61,7 @@ def draw_top8(
     sizes = ["L", "M", "M", "M", "S", "S", "S", "S"]
 
     custom_skins_dir = Path(os.path.dirname(os.path.realpath(__file__))).parent / Path(
-        "static/Resources/Characters/Main/Custom"
+        f"static/Resources/{mode}/Characters/Main/Custom"
     )
 
     # checks for custom skins and returns a list of booleans
@@ -241,7 +245,7 @@ def draw_portrait(
     is_singles=True,
 ):
     # loads images
-    layout = open_image(Path("static/Resources/Layout/char_portrait.png"))
+    layout = open_image(Path(f"static/Resources/{mode}/Layout/char_portrait.png"))
 
     # creates new image to be used as background layer
     portrait = Image.new(
@@ -293,7 +297,7 @@ def draw_portrait(
                     char = Image.new("RGBA", (0, 0))
                 else:
                     char_dir = Path(
-                        f"static/Resources/Characters/Main/{character}/{skin}.png"
+                        f"static/Resources/{mode}/Characters/Main/{character}/{skin}.png"
                     )
                     char = open_image(char_dir)
             else:
@@ -428,7 +432,14 @@ def draw_portrait(
     # draws nickname using its bottom right position
     nick_text_br = (portrait.size[0], portrait.size[1] * nickname_multipliers[size])
     draw_text(
-        portrait, nickname, (0, 0, 0), 52, nick_text_br, center_text=True, nickname=True
+        portrait,
+        nickname,
+        (0, 0, 0),
+        font_dir,
+        52,
+        nick_text_br,
+        center_text=True,
+        nickname=True,
     )
 
     # draws secondary
@@ -444,7 +455,15 @@ def draw_portrait(
 
     # draws placement using its bottom right position
     placement_br = (65, 65)
-    draw_text(portrait, placement, (255, 255, 255), 64, placement_br, center_text=True)
+    draw_text(
+        portrait,
+        placement,
+        (255, 255, 255),
+        font_dir,
+        64,
+        placement_br,
+        center_text=True,
+    )
 
     # resizes portrait right before quitting
     portrait = portrait.resize(
@@ -473,7 +492,7 @@ def draw_top8_graphic(
 ):
     logging.info("Starting top 8 generation.")
 
-    bg_dir = Path(f"static/Resources/Backgrounds/{stage}/{stage_variant}.png")
+    bg_dir = Path(f"static/Resources/{mode}/Backgrounds/{stage}/{stage_variant}.png")
 
     bg = Image.new("RGBA", (0, 0))
     if stage != "Background":
@@ -486,12 +505,21 @@ def draw_top8_graphic(
 
     draw_rectangle(bg, layout_rgb, (0, 0), (bg.size[0], 70))
     draw_rectangle(bg, layout_rgb, (0, bg.size[1] - 70), (bg.size[0], bg.size[1]))
-    draw_text(bg, f"{title}", (255, 255, 255), 68, (bg.size[0], 70), center_text=True)
+    draw_text(
+        bg,
+        f"{title}",
+        (255, 255, 255),
+        font_dir,
+        68,
+        (bg.size[0], 70),
+        center_text=True,
+    )
 
     draw_text(
         bg,
         "graphics by @kiirochiicken",
         (255, 255, 255),
+        font_dir,
         32,
         (10, bg.size[1] - 40),
         anchor="ls",
@@ -500,6 +528,7 @@ def draw_top8_graphic(
         bg,
         "script by @Impasse52",
         (255, 255, 255),
+        font_dir,
         32,
         (10, bg.size[1] - 10),
         anchor="ls",
@@ -509,6 +538,7 @@ def draw_top8_graphic(
         bg,
         f"{attendees_num} participants",
         (255, 255, 255),
+        font_dir,
         32,
         (bg.size[0] - 10, bg.size[1] - 40),
         anchor="rs",
@@ -517,13 +547,16 @@ def draw_top8_graphic(
         bg,
         f"{date}",
         (255, 255, 255),
+        font_dir,
         32,
         (bg.size[0] - 10, bg.size[1] - 10),
         anchor="rs",
     )
 
     if logo:
-        logo_img = Image.open(Path(file_dir) / Path("static/Resources/Layout/logo.png"))
+        logo_img = Image.open(
+            Path(file_dir) / Path(f"static/Resources/{mode}/Layout/logo.png")
+        )
         logo_img = logo_img.resize(
             (int(logo_img.size[0] * 0.25), int(logo_img.size[1] * 0.25))
         )
