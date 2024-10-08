@@ -23,7 +23,7 @@ with open("top8_generator/config/offsets_de.json") as offsets:
     char_offsets = json.load(offsets)
 
 # TODO: properly implement
-mode = "roa"
+mode = "roa2"
 
 file_dir = Path(os.path.dirname(os.path.realpath(__file__)))
 char_dir = Path(f"static/Resources/{mode}/Characters/Secondary")

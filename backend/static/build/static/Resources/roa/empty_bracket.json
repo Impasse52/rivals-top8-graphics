@@ -1,0 +1,78 @@
+{
+    "settings": {
+        "default_rgb": [
+            76,
+            255,
+            0
+        ],
+        "rgb": [
+            70, 
+            75, 
+            134
+        ],
+        "bg_opacity": 150
+    },
+    "meta": {
+        "title": "Tournament Title",
+        "date": "2021-24-11",
+        "participants": "99",
+        "background": "Neo Fire Capital",
+        "background_variant": "1"
+    },
+    "1": {
+        "nickname": "",
+        "character": "Character",
+        "skin": "Default",
+        "secondary": "Secondary",
+        "tertiary": "Tertiary"
+    },
+    "2": {
+        "nickname": "",
+        "character": "Character",
+        "skin": "Default",
+        "secondary": "Secondary",
+        "tertiary": "Tertiary"
+    },
+    "3": {
+        "nickname": "",
+        "character": "Character",
+        "skin": "Default",
+        "secondary": "Secondary",
+        "tertiary": "Tertiary"
+    },
+    "4": {
+        "nickname": "",
+        "character": "Character",
+        "skin": "Default",
+        "secondary": "Secondary",
+        "tertiary": "Tertiary"
+    },
+    "5": {
+        "nickname": "",
+        "character": "Character",
+        "skin": "Default",
+        "secondary": "Secondary",
+        "tertiary": "Tertiary"
+    },
+    "6": {
+        "nickname": "",
+        "character": "Character",
+        "skin": "Default",
+        "secondary": "Secondary",
+        "tertiary": "Tertiary"
+    },
+    "7": {
+        "nickname": "",
+        "character": "Character",
+        "skin": "Default",
+        "secondary": "Secondary",
+        "tertiary": "Tertiary"
+    },
+    "8": {
+        "nickname": "",
+        "character": "Character",
+        "skin": "Default",
+        "secondary": "Secondary",
+        "tertiary": "Tertiary"
+    }
+}

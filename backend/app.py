@@ -18,8 +18,8 @@ CORS(app)
 
 modes = ["roa", "roa2", "melee"]
 
-# TODO: extract from requests
-mode = "roa"
+# TODO: properly implement mode selection
+mode = "roa2"
 
 
 def setup_logging(path: str = "logging.yaml", level=logging.INFO) -> None:
