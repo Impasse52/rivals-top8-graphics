@@ -140,7 +140,7 @@ def get_top8() -> Response:
 
 @app.route("/get_all_skins")
 def get_all_skins() -> dict:
-    print(f"skins from mode {app.config["mode"]}")
+    print(f"skins from mode {app.config['mode']}")
     resources_path = Path(f"static/Resources/{app.config["mode"]}/Characters/Main")
 
     characters = [f for f in os.listdir(resources_path)]
