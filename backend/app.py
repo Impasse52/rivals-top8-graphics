@@ -141,7 +141,7 @@ def get_top8() -> Response:
 @app.route("/get_all_skins")
 def get_all_skins() -> dict:
     print(f"skins from mode {app.config['mode']}")
-    resources_path = Path(f"static/Resources/{app.config["mode"]}/Characters/Main")
+    resources_path = Path(f"static/Resources/{app.config['mode']}/Characters/Main")
 
     characters = [f for f in os.listdir(resources_path)]
     skins = {}
@@ -157,7 +157,7 @@ def get_all_skins() -> dict:
 
 @app.route("/get_all_backgrounds")
 def get_all_backgrounds() -> dict:
-    resources_path = Path(f"static/Resources/{app.config["mode"]}/Backgrounds")
+    resources_path = Path(f"static/Resources/{app.config['mode']}/Backgrounds")
 
     backgrounds = {}
     for bg in os.listdir(resources_path):
@@ -168,7 +168,7 @@ def get_all_backgrounds() -> dict:
 
 @app.route("/get_all_characters")
 def get_all_characters() -> dict:
-    resources_path = Path(f"static/Resources/{app.config["mode"]}/Characters/Secondary")
+    resources_path = Path(f"static/Resources/{app.config['mode']}/Characters/Secondary")
 
     return {"characters": [f.replace(".png", "") for f in os.listdir(resources_path)]}
 
@@ -213,7 +213,7 @@ def get_skins() -> dict:
     if character != "":
         # module_path = Path(os.path.abspath(rivals_top8_results.__path__[0]))
         resources_path = Path(
-            f"./Resources/{app.config["mode"]}/Characters/Main/{character}"
+            f"./Resources/{app.config['mode']}/Characters/Main/{character}"
         )
 
         skins = [f.replace(".png", "") for f in os.listdir(resources_path)]
@@ -228,7 +228,7 @@ def get_skins() -> dict:
 @app.route("/get_backgrounds")
 def get_backgrounds() -> dict:
     # module_path = Path(os.path.abspath(rivals_top8_results.__path__[0])
-    resources_path = Path(f"static/Resources/{app.config["mode"]}/Backgrounds")
+    resources_path = Path(f"static/Resources/{app.config['mode']}/Backgrounds")
 
     return {"backgrounds": os.listdir(resources_path)}
 
@@ -237,7 +237,7 @@ def get_backgrounds() -> dict:
 def get_bg_variants() -> dict:
     background = request.args.get("background")
     # module_path = Path(os.path.abspath(rivals_top8_results.__path__[0])
-    resources_path = Path(f"./Resources/{app.config["mode"]}/Backgrounds/{background}")
+    resources_path = Path(f"./Resources/{app.config['mode']}/Backgrounds/{background}")
 
     variants = [v.replace(".png", "") for v in os.listdir(resources_path)]
 
