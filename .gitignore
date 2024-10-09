@@ -1,0 +1,12 @@
+.github
+.vscode
+**/__pycache__/**
+frontend/node_modules
+backend/top8_generator/example_doubles.py
+backend/top8_generator/example_singles.py
+test/**
+backend/info.log
+backend/errors.log
+backend/static/Resources/Characters/Main/Custom/**
+results.png
+frontend/build/**
