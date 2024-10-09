@@ -13,7 +13,6 @@ from flask import (
     send_from_directory,
     abort,
     redirect,
-    url_for,
 )
 from flask_cors import CORS
 from TournamentFetcher import TournamentFetcher
@@ -26,9 +25,6 @@ app = Flask(__name__, static_folder="static/build")
 CORS(app)
 
 modes = ["roa", "roa2", "melee"]
-
-# TODO: properly implement mode selection
-# app.config["mode"] = "roa"
 
 
 def setup_logging(path: str = "logging.yaml", level=logging.INFO) -> None:
@@ -101,6 +97,7 @@ def get_top8() -> Response:
                 skins,
                 secondaries,
                 tertiaries,
+                mode=app.config["mode"],
                 layout_rgb=tuple(top8["settings"]["rgb"]),
                 bg_opacity=top8["settings"]["bg_opacity"],
                 resize_factor=1.3,
@@ -113,6 +110,7 @@ def get_top8() -> Response:
                 skins,
                 secondaries,
                 tertiaries,
+                mode=app.config["mode"],
                 layout_rgb=tuple(top8["settings"]["rgb"]),
                 bg_opacity=top8["settings"]["bg_opacity"],
                 resize_factor=1.3,
@@ -123,7 +121,8 @@ def get_top8() -> Response:
 
     # draws results graphic and saves it to local disk
     draw_top8_graphic(
-        top8_img,
+        top8_image=top8_img,
+        mode=app.config["mode"],
         title=top8["meta"]["title"],
         date=parsed_date,
         attendees_num=top8["meta"]["participants"],

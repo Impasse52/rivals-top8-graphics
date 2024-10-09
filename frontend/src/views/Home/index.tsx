@@ -61,7 +61,7 @@ export default function Home() {
     const [settings, setSettings] = useState<TournamentSettings>(defaultSettings);
 
     // api calls state
-    const [outputURL, setOutputURL] = useState("/static/Resources/preview.png");
+    const [outputURL, setOutputURL] = useState("/static/Resources/roa/preview.png");
     const [skinsList, setSkinsList] = useState<SkinsList>(defaultSkinList);
     const [customSkins, setCustomSkins] =
         useState<CustomSkinsList>(defaultCustoms);

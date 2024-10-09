@@ -51,6 +51,7 @@ def draw_top8(
     secondaries: list,
     tertiaries: list,
     resize_factor: float,
+    mode: str,
     layout_rgb: tuple = (255, 138, 132),
     bg_opacity: int = 100,
     save: bool = True,
@@ -81,17 +82,18 @@ def draw_top8(
     # creates portraits
     players = [
         draw_portrait(
-            nicknames[i],
-            characters[i],
-            skins[i],
-            placements[i],
-            resizes[i],
-            layout_rgb,
-            sizes[i],
-            custom_skins_dir,
-            driver,
-            secondaries[i],
-            tertiaries[i],
+            nickname=nicknames[i],
+            characters=characters[i],
+            skins=skins[i],
+            placement=placements[i],
+            resizing=resizes[i],
+            rgb=layout_rgb,
+            size=sizes[i],
+            custom_skins_dir=custom_skins_dir,
+            driver=driver,
+            secondary=secondaries[i],
+            tertiary=tertiaries[i],
+            mode=mode,
             bg_opacity=bg_opacity,
             save=False,
         )
@@ -152,6 +154,7 @@ def draw_top8_columns(
     secondaries,
     tertiaries,
     resize_factor,
+    mode: str,
     layout_rgb=(255, 138, 132),
     bg_opacity=100,
     save=True,
@@ -164,15 +167,18 @@ def draw_top8_columns(
     # creates portraits
     players = [
         draw_portrait(
-            nicknames[i],
-            characters[i],
-            skins[i],
-            placements[i],
-            resizes[i],
-            layout_rgb,
-            sizes[i],
-            secondaries[i],
-            tertiaries[i],
+            nickname=nicknames[i],
+            characters=characters[i],
+            skins=skins[i],
+            placement=placements[i],
+            resizing=resizes[i],
+            rgb=layout_rgb,
+            size=sizes[i],
+            custom_skins_dir=None,
+            driver=None,
+            secondary=secondaries[i],
+            tertiary=tertiaries[i],
+            mode=mode,
             bg_opacity=bg_opacity,
             save=False,
         )
@@ -212,7 +218,8 @@ def draw_top8_columns(
     return output
 
 
-def draw_additional_char(character, portrait, position):
+def draw_additional_char(character, portrait, position, mode):
+    char_dir = Path(f"static/Resources/{mode}/Characters/Secondary")
     input_file = Path(char_dir / f"{character}.png")
 
     if character != "None":
@@ -236,6 +243,7 @@ def draw_portrait(
     size,
     custom_skins_dir,
     driver,
+    mode: str,
     secondary=None,
     tertiary=None,
     bg_opacity=100,
@@ -409,11 +417,11 @@ def draw_portrait(
 
     # draws secondary
     if secondary:
-        draw_additional_char(secondary, portrait, (portrait.size[0] - 85, 5))
+        draw_additional_char(secondary, portrait, (portrait.size[0] - 85, 5), mode=mode)
 
     # draws tertiary
     if tertiary:
-        draw_additional_char(tertiary, portrait, (5, portrait.size[1] - 133))
+        draw_additional_char(tertiary, portrait, (5, portrait.size[1] - 133), mode=mode)
 
     # draws placement box
     draw_rectangle(portrait, rgb, (0, 0), (65, 65))
@@ -444,6 +452,7 @@ def draw_portrait(
 
 
 def draw_top8_graphic(
+    mode: str,
     top8_image=Image.new("RGBA", (0, 0)),
     title="A Rivals of Aether Bracket",
     attendees_num=0,
