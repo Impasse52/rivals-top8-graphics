@@ -19,28 +19,28 @@ from top8_generator.utils import (
 from .recolor import generate_recolor, start_headless_driver
 from .utils import get_latest_file
 
-with open("top8_generator/config/offsets_de.json") as offsets:
-    char_offsets = json.load(offsets)
+with open("top8_generator/config/config_de.json") as config:
+    config = json.load(config)
 
-# TODO: properly implement
-mode = "roa2"
+
+char_offsets = config["offsets"]
+mode = config["mode"]
 
 file_dir = Path(os.path.dirname(os.path.realpath(__file__)))
 char_dir = Path(f"static/Resources/{mode}/Characters/Secondary")
 font_dir = Path(f"static/Resources/{mode}/Layout/Pixellari.ttf")
 
 # used to adjust the nicknames' height
-nickname_multipliers = {"L": 1.88, "M": 1.85, "S": 1.83}
+nickname_multipliers = config["nickname_multipliers"]
 
 # used to pick the right portrait box
-portrait_multipliers = {"L": 1, "M": 0.8, "S": 0.75}
+portrait_multipliers = config["portrait_multipliers"]
 
 # different box sizes have different zoom-ins
-# True = Singles multipliers, False = Doubles multipliers
-zoom_multipliers = {
-    True: {"L": 1.65, "M": 1.75, "S": 1.90},
-    False: {"L": 1.30, "M": 1.35, "S": 1.70},
-}
+zoom_multipliers = config["zoom_multipliers"]
+
+# resizes for each playerbox
+resizes = config["resizes"]
 
 
 # draws the standard layout
@@ -57,7 +57,6 @@ def draw_top8(
 ) -> Image.Image:
     # layout settings (from last player to first player)
     placements = [1, 2, 3, 4, 5, 5, 7, 7]
-    resizes = [1.223, 0.9, 0.9, 0.9, 0.675, 0.675, 0.675, 0.675]
     sizes = ["L", "M", "M", "M", "S", "S", "S", "S"]
 
     custom_skins_dir = Path(os.path.dirname(os.path.realpath(__file__))).parent / Path(
@@ -95,7 +94,6 @@ def draw_top8(
             tertiaries[i],
             bg_opacity=bg_opacity,
             save=False,
-            is_singles=True if isinstance(skins[0], str) else False,
         )
         for i in range(8)
     ]
@@ -242,7 +240,6 @@ def draw_portrait(
     tertiary=None,
     bg_opacity=100,
     save=False,
-    is_singles=True,
 ):
     # loads images
     layout = open_image(Path(f"static/Resources/{mode}/Layout/char_portrait.png"))
@@ -268,11 +265,6 @@ def draw_portrait(
     if isinstance(skins[0], str):
         skins = [skins]
         characters = [characters]
-
-    # flattens lists to handle doubles tournaments
-    if isinstance(skins[0], list):
-        skins = [item for sublist in skins for item in sublist]
-        characters = [item for sublist in characters for item in sublist]
 
     for i, (character, skin) in enumerate(zip(characters, skins)):
         # needed to check for custom skins
@@ -337,11 +329,11 @@ def draw_portrait(
             char = char.resize(
                 (
                     int(
-                        (char.size[0] * zoom_multipliers[is_singles][size])
+                        (char.size[0] * zoom_multipliers[size])
                         * portrait_multipliers[size]
                     ),
                     int(
-                        (char.size[1] * zoom_multipliers[is_singles][size])
+                        (char.size[1] * zoom_multipliers[size])
                         * portrait_multipliers[size]
                     ),
                 ),
@@ -383,40 +375,13 @@ def draw_portrait(
         # loads layout and replaces default rgb with the chosen new rgb
         layout = replace_rgb(layout, (76, 255, 0), rgb)
 
-        doubles_multipliers = {
-            "L": {
-                "x": 0.1,
-                "y": 0,
-            },
-            "M": {
-                "x": 0.11,
-                "y": 0,
-            },
-            "S": {
-                "x": 0.12,
-                "y": 0,
-            },
-        }
-
-        doubles_offset_x = 0
-        doubles_offset_y = 0
-
-        # handles offsets for the first player in a doubles team
-        if not is_singles and i % 2 == 0:
-            doubles_offset_x = char.size[0] * doubles_multipliers[size]["x"]
-            doubles_offset_y = 0
-        # handles offsets for the second player in a doubles team
-        elif not is_singles and i % 2 == 1:
-            doubles_offset_x = -char.size[0] * doubles_multipliers[size]["x"]
-            doubles_offset_y = 0
-
         # pastes character and layout onto the empty portrait
         if character != "None":
             portrait.paste(
                 char,
                 (
-                    int((doubles_offset_x + char_offsets[character][size][0])),
-                    int((doubles_offset_y + char_offsets[character][size][1])),
+                    int((char_offsets[character][size][0])),
+                    int((char_offsets[character][size][1])),
                 ),
                 char,
             )
