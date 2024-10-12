@@ -12,7 +12,7 @@ import {
 
 // used to retrieve the characters' icons
 // TODO: properly implement mode selection
-const mode = "roa2";
+const mode = "roa";
 export const assetsDir = `static/Resources/${mode}/Characters/Secondary`;
 
 // default values for PlayerData
